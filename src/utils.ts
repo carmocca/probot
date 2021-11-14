@@ -20,7 +20,7 @@ export class CachedConfigTracker {
     const key = repoKey(context);
     if (!(key in this.repoConfigs) || force) {
       context.log({key}, 'loadConfig');
-      this.repoConfigs[key] = await context.config('pytorch-probot.yml');
+      this.repoConfigs[key] = await context.config('lightning-probot.yml');
     }
     return this.repoConfigs[key];
   }

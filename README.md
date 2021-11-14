@@ -7,7 +7,7 @@ Forked from https://github.com/pytorch/probot.
 ## auto-cc-bot
 
 Add an issue to your project like https://github.com/pytorch/pytorch/issues/24422
-and add a `.github/pytorch-probot.yml` file with:
+and add a `.github/lightning-probot.yml` file with:
 
 ```yml
 tracking_issue: 24422

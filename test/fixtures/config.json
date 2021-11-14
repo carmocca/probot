@@ -1,6 +1,6 @@
 {
-  "name": "pytorch-probot.yml",
-  "path": ".github/pytorch-probot.yml",
+  "name": "lightning-probot.yml",
+  "path": ".github/lightning-probot.yml",
   "sha": "0afb4efc85edd842bf642509e2e11a2d0d3e40bb",
   "size": 77,
   "url": "https://api.github.com/repos/ezyang/testing-ideal-computing-machine/contents/.github/pytorch-probot.yml?ref=master",

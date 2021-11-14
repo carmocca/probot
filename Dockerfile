@@ -26,7 +26,7 @@ COPY --from=build /build/dist dist/
 COPY --from=prod-build /out/node_modules node_modules/
 COPY ./package.json .
 COPY ./yarn.lock .
-RUN zip -FSr /pytorch-probot.zip .
+RUN zip -FSr /lightning-probot.zip .
 
 FROM scratch as prod
-COPY --from=zip /pytorch-probot.zip .
+COPY --from=zip /lightning-probot.zip .
