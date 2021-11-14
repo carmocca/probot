@@ -16,7 +16,7 @@ tracking_issue: 24422
 Based on who is listed in the tracking issue, the bot will automatically
 CC people when labels are added to an issue.
 
-## auto-label-bot (currently unused)
+## auto-label-bot (DISABLED)
 
 * If an issue is labeled **high priority**, also label it
   **triage review**
