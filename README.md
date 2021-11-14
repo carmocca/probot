@@ -1,12 +1,8 @@
-# pytorch-probot
+# lightning-probot
 
-A GitHub App built with [Probot](https://github.com/probot/probot) that implements bot actions for PyTorch
+A GitHub App built with [Probot](https://github.com/probot/probot) that implements bot actions for PyTorch Lightning.
 
-This bot implements a few behaviors.  **This bot currently only
-implements idempotent behaviors (i.e., it is harmless if the bot process
-events multiple times.**  If you add support for non-idempotent
-behaviors, you need to make sure only the GitHub Action or AWS Lambda is
-enabled.
+Forked from https://github.com/pytorch/probot.
 
 ## auto-cc-bot
 
@@ -20,7 +16,7 @@ tracking_issue: 24422
 Based on who is listed in the tracking issue, the bot will automatically
 CC people when labels are added to an issue.
 
-## auto-label-bot
+## auto-label-bot (currently unused)
 
 * If an issue is labeled **high priority**, also label it
   **triage review**
@@ -29,35 +25,6 @@ CC people when labels are added to an issue.
 * If an issue or pull request contains a regex in its title, label
   it accordingly, e.g., a title containing 'ROCm' would yield the
   **module: rocm** label.
-
-## trigger-circleci-workflows
-
-* Trigger circleci workflows based off of labeling events / push events
-
-Configuration (`.github/pytorch-circleci-labels.yml`) should look similar to this:
-```yml
-labels_to_circle_params:
-  # Refers to github labels
-  ci/binaries:
-    # Refers to circleci parameters
-    # For circleci documentation on pipeline parameters check:
-    #      https://circleci.com/docs/2.0/pipeline-variables/#pipeline-parameters-in-configuration
-    parameter: run_binaries_tests
-    # [[optional]] Automatically trigger workflows with parameters on push
-    default_true_on:
-      branches:
-        - nightly
-        # Regex is allowed as well
-        - ci-all/.*
-      # Even works on tags!
-      tags:
-        - v[0-9]+(\.[0-9]+)*-rc[0-9]+
-  # Multiple label / parameters can be defined
-  ci/bleh:
-    parameter: run_bleh_tests
-  ci/foo:
-    parameter: run_foo_tests
-```
 
 ## Setup
 
@@ -80,27 +47,15 @@ through the process.
 
 ## Deploying GitHub Actions
 
-Although a GitHub App is convenient for testing, it requires an actual
-server to deploy in prod.  Previously we ran the server on AWS, but this
-deployment process was substantially more involved.  GitHub Actions
-deployment is simpler.  Follow the instructions at
+Follow the instructions at
 https://github.com/actions/toolkit/blob/master/docs/action-versioning.md
-
-Right now the GitHub Actions deployment is a little rocky because
-massive queueing in the PyTorch repository means it takes something
-like 30min before actions are run.  So we are also running AWS
-side-by-side.
-
-## Deploying to AWS
-
-[`.github/workflows/build.yml`](.github/workflows/build.yml) will build and deploy the code on every push to `main`.
 
 ## Contributing
 
-If you have suggestions for how pytorchbot could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
+If you feel like an improvement could be made, please open an issue in the PyTorch Lightning repository instead.
 
-For more, check out the [Contributing Guide](CONTRIBUTING.md).
+https://github.com/PyTorchLightning/pytorch-lightning
 
 ## License
 
-[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org)
+[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org), 2021 Carlos Mocholí <carlos@grid.ai> (https://pytorchlightning.ai)

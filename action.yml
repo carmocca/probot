@@ -1,5 +1,5 @@
-name: 'PyTorch Probot'
-description: 'Probot for PyTorch.'
+name: 'Lightning Probot'
+description: 'Probot for PyTorch Lightning.'
 runs:
   using: 'node12'
   main: 'action.js'
