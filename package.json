@@ -24,7 +24,6 @@
     "format-check": "prettier --check **/*ts"
   },
   "dependencies": {
-    "@probot/serverless-lambda": "^0.4.0",
     "@types/minimist": "^1.2.2",
     "axios": "^0.21.2",
     "probot": "^9",
