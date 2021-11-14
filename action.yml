@@ -1,4 +1,4 @@
-name: 'Lightning Probot'
+name: 'carmocca's Lightning Probot'
 description: 'Probot for PyTorch Lightning.'
 runs:
   using: 'node12'
