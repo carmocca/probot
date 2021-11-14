@@ -2,4 +2,4 @@ name: 'carmocca Lightning Probot'
 description: 'Probot for PyTorch Lightning.'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'dist/action.js'

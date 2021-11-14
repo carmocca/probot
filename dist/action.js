@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Require the adapter
-var probot_actions_adapter_1 = __importDefault(require("probot-actions-adapter"));
+var run = require('@probot/adapter-github-actions').run;
 // Require your Probot app's entrypoint, usually this is just index.js
 var index_1 = __importDefault(require("./index"));
 // Adapt the Probot app for Actions
 // This also acts as the main entrypoint for the Action
-probot_actions_adapter_1.default(index_1.default);
+run(index_1.default);
