@@ -32,11 +32,8 @@ CC people when labels are added to an issue.
 # Install dependencies
 yarn install
 
-# Run the tests
-yarn test
-
-# Run the bot
-yarn start
+# Build the project
+yarn build
 ```
 
 ## Live testing as a GitHub App

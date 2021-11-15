@@ -9,11 +9,6 @@ COPY src/ src/
 FROM install as build
 RUN yarn build
 
-FROM install as test
-COPY test/ test/
-COPY jest.config.js .
-RUN yarn test
-
 FROM node:12 as prod-build
 WORKDIR /out
 COPY package.json .
