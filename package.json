@@ -16,8 +16,7 @@
     "build": "tsc",
     "start": "probot run ./dist/index.js",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write **/*.ts",
-    "format-check": "prettier --check **/*ts"
+    "format": "prettier --write **/*.ts"
   },
   "dependencies": {
     "@probot/adapter-github-actions": "^3.0.0",
@@ -25,7 +24,6 @@
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
-    "@types/nock": "^11.1.0",
     "@types/node": "^12.7.12",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",

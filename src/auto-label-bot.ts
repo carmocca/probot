@@ -46,7 +46,9 @@ function myBot(app: Probot): void {
     }
 
     if (newLabels.length) {
-      await context.octokit.issues.addLabels(context.issue({labels: newLabels}));
+      await context.octokit.issues.addLabels(
+        context.issue({labels: newLabels})
+      );
     }
   });
 
@@ -65,7 +67,9 @@ function myBot(app: Probot): void {
     }
 
     if (newLabels.length) {
-      await context.octokit.issues.addLabels(context.issue({labels: newLabels}));
+      await context.octokit.issues.addLabels(
+        context.issue({labels: newLabels})
+      );
     }
   }
 
