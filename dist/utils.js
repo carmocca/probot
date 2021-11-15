@@ -111,7 +111,7 @@ var CachedIssueTracker = /** @class */ (function (_super) {
                     case 1:
                         config = _a.sent();
                         issue = context.issue();
-                        if (!(config[this.configName] === issue.number)) return [3 /*break*/, 3];
+                        if (!(config[this.configName] === issue.issue_number)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.loadIssue(context, /* force */ true)];
                     case 2:
                         _a.sent();
@@ -136,7 +136,7 @@ var CachedIssueTracker = /** @class */ (function (_super) {
                     case 1:
                         config = _a.sent();
                         if (!(config != null && this.configName in config)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, context.github.issues.get(context.repo({ issue_number: config[this.configName] }))];
+                        return [4 /*yield*/, context.octokit.issues.get(context.repo({ issue_number: config[this.configName] }))];
                     case 2:
                         subsPayload = _a.sent();
                         subsText = subsPayload.data['body'];

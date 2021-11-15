@@ -97,13 +97,13 @@ function myBot(app) {
                             : newCCString_1;
                         context.log({ newBody: newBody });
                         if (!(payloadType === 'issue')) return [3 /*break*/, 3];
-                        return [4 /*yield*/, context.github.issues.update(context.issue({ body: newBody }))];
+                        return [4 /*yield*/, context.octokit.issues.update(context.issue({ body: newBody }))];
                     case 2:
                         _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
                         if (!(payloadType === 'pull_request')) return [3 /*break*/, 5];
-                        return [4 /*yield*/, context.github.pulls.update(context.issue({ body: newBody }))];
+                        return [4 /*yield*/, context.octokit.pulls.update(context.pullRequest({ body: newBody }))];
                     case 4:
                         _a.sent();
                         _a.label = 5;

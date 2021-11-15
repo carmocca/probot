@@ -70,7 +70,7 @@ function myBot(app) {
                             break;
                     }
                     if (!newLabels.length) return [3 /*break*/, 2];
-                    return [4 /*yield*/, context.github.issues.addLabels(context.issue({ labels: newLabels }))];
+                    return [4 /*yield*/, context.octokit.issues.addLabels(context.issue({ labels: newLabels }))];
                 case 1:
                     _a.sent();
                     _a.label = 2;
@@ -93,7 +93,7 @@ function myBot(app) {
                             }
                         }
                         if (!newLabels.length) return [3 /*break*/, 2];
-                        return [4 /*yield*/, context.github.issues.addLabels(context.issue({ labels: newLabels }))];
+                        return [4 /*yield*/, context.octokit.issues.addLabels(context.issue({ labels: newLabels }))];
                     case 1:
                         _b.sent();
                         _b.label = 2;

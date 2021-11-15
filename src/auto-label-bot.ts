@@ -1,8 +1,8 @@
-import * as probot from 'probot';
+import {Probot} from 'probot';
 
 const regexToLabel: [RegExp, string][] = [[/rocm/gi, 'module: rocm']];
 
-function myBot(app: probot.Application): void {
+function myBot(app: Probot): void {
   function addLabel(
     labelSet: Set<string>,
     newLabels: string[],
@@ -46,7 +46,7 @@ function myBot(app: probot.Application): void {
     }
 
     if (newLabels.length) {
-      await context.github.issues.addLabels(context.issue({labels: newLabels}));
+      await context.octokit.issues.addLabels(context.issue({labels: newLabels}));
     }
   });
 
@@ -65,7 +65,7 @@ function myBot(app: probot.Application): void {
     }
 
     if (newLabels.length) {
-      await context.github.issues.addLabels(context.issue({labels: newLabels}));
+      await context.octokit.issues.addLabels(context.issue({labels: newLabels}));
     }
   }
 

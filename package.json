@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@probot/adapter-github-actions": "^3.0.0",
-    "probot": "^9.15.1"
+    "probot": "^11"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
