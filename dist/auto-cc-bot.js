@@ -140,5 +140,16 @@ function myBot(app) {
             }
         });
     }); });
+    // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+    app.on('pull_request.ready_for_review', function (context) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request')];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 }
 exports.default = myBot;

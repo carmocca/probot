@@ -80,6 +80,10 @@ function myBot(app: Probot): void {
   app.on('pull_request.labeled', async context => {
     await runBotForLabels(context, 'pull_request');
   });
+  // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+  app.on('pull_request.ready_for_review', async context => {
+    await runBotForLabels(context, 'pull_request');
+  });
 }
 
 export default myBot;
