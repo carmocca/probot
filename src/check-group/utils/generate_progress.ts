@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CheckGroupConfig, ProgressReport, SubProjConfig } from "../types";
 /* eslint-enable @typescript-eslint/no-unused-vars */
-import { DefaultCheckId } from "../config";
+import { defaultCheckId } from "../config";
 
 export const generateProgressReport = (
   subprojects: SubProjConfig[],
@@ -104,7 +104,7 @@ export const statusToMark = (
   config: CheckGroupConfig,
 ): string => {
   // TODO(@tianhaoz95): come up with better way to deal with dev and prod discrepancies.
-  if (check === DefaultCheckId || check == config.customServiceName) {
+  if (check === defaultCheckId || check == config.customServiceName) {
     return "Yep, that's me :cat:";
   }
   if (check in checksStatusLookup) {

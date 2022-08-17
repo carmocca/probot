@@ -2,7 +2,7 @@
 import { CheckGroupConfig } from "../types";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ConfigPath } from "../config";
+import { configPath } from "../config";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Context } from "probot";
@@ -21,7 +21,7 @@ export const fetchConfig = async (
   /* eslint-enable @typescript-eslint/no-explicit-any */
 ): Promise<CheckGroupConfig> => {
   const configData: Record<string, unknown> = (await context.config(
-    ConfigPath,
+    configPath,
   )) as Record<string, unknown>;
   return parseUserConfig(configData);
 };

@@ -1,4 +1,4 @@
-import { DefaultCheckId, DefaultDevCheckId } from "../config";
+import { defaultCheckId, defaultDevCheckId } from "../config";
 import { CheckGroupConfig } from "../types";
 import { Context } from "probot";
 
@@ -33,8 +33,8 @@ export const isTriggeredBySelf = (
     // this will prevent them from triggering each other infinitely,
     // but for future name changes, this might now work. Need to come
     // up with a more systematic approach to prevent cross triggering.
-    context.payload["check_run"]["name"] == DefaultCheckId ||
-    context.payload["check_run"]["name"] == DefaultDevCheckId
+    context.payload["check_run"]["name"] == defaultCheckId ||
+    context.payload["check_run"]["name"] == defaultDevCheckId
   ) {
     context.log.info("Self triggering detected. Skip.");
     return true;

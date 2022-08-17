@@ -3,13 +3,13 @@
  */
 
 import {
-  DefaultCheckId,
-  ErrorCheckDetails,
-  ErrorCheckSummary,
-  ErrorCheckTitle,
-  StartCheckDetails,
-  StartCheckSummary,
-  StartCheckTitle,
+  defaultCheckId,
+  errorCheckDetails,
+  errorCheckSummary,
+  errorCheckTitle,
+  startCheckDetails,
+  startCheckSummary,
+  startCheckTitle,
 } from "../config";
 import {
   extractShaFromCheckRunContext,
@@ -86,13 +86,13 @@ export class CheckGroup {
         `Posted checks are: ${JSON.stringify(postedChecks)}`,
       );
       const conclusion = satisfyExpectedChecks(subprojs, postedChecks);
-      if (!(DefaultCheckId in postedChecks)) {
+      if (!(defaultCheckId in postedChecks)) {
         this.context.log.info("First time run. Post starting check.");
         await this.postStartingCheck(
           this.config.customServiceName,
-          StartCheckTitle,
-          StartCheckSummary,
-          StartCheckDetails,
+          startCheckTitle,
+          startCheckSummary,
+          startCheckDetails,
         );
       }
       if (conclusion === "all_passing") {
@@ -127,9 +127,9 @@ export class CheckGroup {
       // https://stackoverflow.com/questions/44678315/how-to-import-markdown-md-file-in-typescript
       await this.postFailingCheck(
         this.config.customServiceName,
-        ErrorCheckTitle,
-        ErrorCheckSummary,
-        ErrorCheckDetails,
+        errorCheckTitle,
+        errorCheckSummary,
+        errorCheckDetails,
       );
     }
   }

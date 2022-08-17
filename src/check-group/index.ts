@@ -8,13 +8,13 @@ import {Context, Probot} from 'probot';
 import {checkRunEventHandler, pullRequestEventHandler} from './handlers';
 
 function checkGroupApp(app: Probot): void {
-  app.on('pull_request', async (context: Context<'pull_request'>) => {
+  app.on('pull_request', async context => {
     await pullRequestEventHandler(context);
   });
 
-  app.on('check_run', async (context: Context<'check_run'>) => {
+  app.on('check_run', async context => {
     await checkRunEventHandler(context);
   });
-};
+}
 
 export default checkGroupApp;
