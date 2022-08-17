@@ -21,9 +21,8 @@ export const pullRequestEventHandler = async (
   const startTime = new Date().toISOString();
   const sha = extractShaFromPullRequestContext(context);
   const config = await fetchConfig(context);
-  const pullRequestNumber = parsePullRequestNumberFromPullRequestContext(
-    context
-  );
+  const pullRequestNumber =
+    parsePullRequestNumberFromPullRequestContext(context);
   const core = new CheckGroup(
     pullRequestNumber,
     config,
@@ -44,9 +43,8 @@ export const checkRunEventHandler = async (
   if (isTriggeredBySelf(context, config)) {
     return;
   }
-  const pullRequests: PullRequestData[] = extractPullRequestsFromCheckRunContext(
-    context
-  );
+  const pullRequests: PullRequestData[] =
+    extractPullRequestsFromCheckRunContext(context);
   const startTime = new Date().toISOString();
   for (const pullRequest of pullRequests) {
     context.log.info(
