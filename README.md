@@ -40,4 +40,6 @@ https://github.com/PyTorchLightning/pytorch-lightning
 
 ## License
 
-[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org), 2022 Carlos Mocholí <carlos@lightning.ai> (https://lightning.ai)
+(cc-bot) ISC © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org)
+(check-group) ISC © 2020 Tianhao Zhou tianhaoz@umich.edu
+ISC © 2022 Carlos Mocholí <carlos@lightning.ai> (https://lightning.ai)
