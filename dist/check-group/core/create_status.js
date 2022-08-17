@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createStatus = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 var http_status_codes_1 = require("http-status-codes");
 /**
@@ -49,7 +50,7 @@ var http_status_codes_1 = require("http-status-codes");
  * @param details The details that shows up under the summary.
  * @param startTime The string time that the run started.
  */
-exports.createStatus = function (context, conclusion, status, name, title, summary, details, startTime, sha) { return __awaiter(void 0, void 0, void 0, function () {
+var createStatus = function (context, conclusion, status, name, title, summary, details, startTime, sha) { return __awaiter(void 0, void 0, void 0, function () {
     var completedAt, startedAt, statusOptions, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -75,15 +76,16 @@ exports.createStatus = function (context, conclusion, status, name, title, summa
                     "started_at": startedAt,
                     status: status,
                 });
-                context.log.info("Create " + status + " status with conclusion " + conclusion + " for sha " + sha);
+                context.log.info("Create ".concat(status, " status with conclusion ").concat(conclusion, " for sha ").concat(sha));
                 return [4 /*yield*/, context.octokit.checks.create(statusOptions)];
             case 1:
                 response = _a.sent();
-                context.log.info("Create status finished with status " + response.status);
+                context.log.info("Create status finished with status ".concat(response.status));
                 if (response.status !== http_status_codes_1.StatusCodes.CREATED) {
-                    context.log.error("Create passing status failed with status " + response.status + " and error: " + JSON.stringify(response.data));
+                    context.log.error("Create passing status failed with status ".concat(response.status, " and error: ").concat(JSON.stringify(response.data)));
                 }
                 return [2 /*return*/];
         }
     });
 }); };
+exports.createStatus = createStatus;

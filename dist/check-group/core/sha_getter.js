@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.extractShaFromCheckRunContext = exports.extractShaFromPullRequestContext = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /**
  * Exrtacts the head sha from the pull request event payload.
@@ -8,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @returns The string sha that correspond to the head commit
  * of the pull request.
  */
-exports.extractShaFromPullRequestContext = function (
+var extractShaFromPullRequestContext = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) {
     var payload = context.payload;
@@ -31,6 +32,7 @@ context) {
         throw Error("pull_request not found in context payload");
     }
 };
+exports.extractShaFromPullRequestContext = extractShaFromPullRequestContext;
 /**
  * Parses the SHA the check run is associated with from the
  * context. For more details, please see:
@@ -39,7 +41,7 @@ context) {
  * @param context The check run version of Probot context.
  * @returns The SHA that the check run is associated with.
  */
-exports.extractShaFromCheckRunContext = function (
+var extractShaFromCheckRunContext = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) {
     if ("check_run" in context.payload) {
@@ -55,3 +57,4 @@ context) {
         throw Error("check_run not found in payload.");
     }
 };
+exports.extractShaFromCheckRunContext = extractShaFromCheckRunContext;

@@ -3,6 +3,7 @@
  * @module PopulateCustomServiceName
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.populateCustomServiceName = void 0;
 var config_1 = require("../../config");
 /**
  * Parse the custom service name from the user

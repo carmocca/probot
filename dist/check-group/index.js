@@ -42,7 +42,7 @@ function checkGroupApp(app) {
     app.on('pull_request', function (context) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, handlers_1.pullRequestEventHandler(context)];
+                case 0: return [4 /*yield*/, (0, handlers_1.pullRequestEventHandler)(context)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -52,7 +52,7 @@ function checkGroupApp(app) {
     app.on('check_run', function (context) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, handlers_1.checkRunEventHandler(context)];
+                case 0: return [4 /*yield*/, (0, handlers_1.checkRunEventHandler)(context)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

@@ -87,12 +87,12 @@ function myBot(app) {
                         newCCString_1 = 'cc';
                         // eslint-disable-next-line github/array-foreach
                         cc.forEach(function (u) {
-                            newCCString_1 += " @" + u;
+                            newCCString_1 += " @".concat(u);
                         });
                         newBody = body
                             ? oldCCMatch
                                 ? body.replace(reCC, newCCString_1)
-                                : body + "\n\n" + newCCString_1
+                                : "".concat(body, "\n\n").concat(newCCString_1)
                             : newCCString_1;
                         context.log({ newBody: newBody });
                         if (!(payloadType === 'issue')) return [3 /*break*/, 3];

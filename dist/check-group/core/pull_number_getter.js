@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parsePullRequestNumbersFromCheckRunContext = exports.parsePullRequestNumberFromPullRequestContext = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /**
  * Parses the pull request number from the context.
@@ -8,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @returns The pull request number of the pull request that
  * triggered the event.
  */
-exports.parsePullRequestNumberFromPullRequestContext = function (
+var parsePullRequestNumberFromPullRequestContext = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) {
     if ("number" in context.payload) {
@@ -18,6 +19,7 @@ context) {
         throw Error("Cannot find number in payload.");
     }
 };
+exports.parsePullRequestNumberFromPullRequestContext = parsePullRequestNumberFromPullRequestContext;
 /* istanbul ignore next */
 /**
  * Parses the numbers for all pull requests that are associated
@@ -31,7 +33,7 @@ context) {
  * @returns The pull request numbers that are associated with
  * the check run that triggered this event.
  */
-exports.parsePullRequestNumbersFromCheckRunContext = function (
+var parsePullRequestNumbersFromCheckRunContext = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) {
     if ("check_run" in context.payload) {
@@ -57,3 +59,4 @@ context) {
         throw Error("check_run not found in payload.");
     }
 };
+exports.parsePullRequestNumbersFromCheckRunContext = parsePullRequestNumbersFromCheckRunContext;

@@ -4,6 +4,7 @@
  * @module Config
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorCheckDetails = exports.errorCheckSummary = exports.errorCheckTitle = exports.startCheckDetails = exports.startCheckSummary = exports.startCheckTitle = exports.configPath = exports.defaultDevCheckId = exports.defaultCheckId = void 0;
 /**
  * The default name that will be display on the list
  * on the pull request page.

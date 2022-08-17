@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.extractPullRequestsFromCheckRunContext = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /**
  *
  * @param context The check run version of the Probot context
  * @returns A list of pull request data.
  */
-exports.extractPullRequestsFromCheckRunContext = function (
+var extractPullRequestsFromCheckRunContext = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) {
     if ("check_run" in context.payload) {
@@ -41,3 +42,4 @@ context) {
         throw Error("check_run not found in payload.");
     }
 };
+exports.extractPullRequestsFromCheckRunContext = extractPullRequestsFromCheckRunContext;

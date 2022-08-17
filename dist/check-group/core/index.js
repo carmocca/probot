@@ -39,21 +39,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.extractPullRequestsFromCheckRunContext = exports.extractShaFromCheckRunContext = exports.parsePullRequestNumbersFromCheckRunContext = exports.parsePullRequestNumberFromPullRequestContext = exports.extractShaFromPullRequestContext = exports.fetchConfig = exports.CheckGroup = void 0;
 var config_1 = require("../config");
 var sha_getter_1 = require("./sha_getter");
-exports.extractShaFromCheckRunContext = sha_getter_1.extractShaFromCheckRunContext;
-exports.extractShaFromPullRequestContext = sha_getter_1.extractShaFromPullRequestContext;
+Object.defineProperty(exports, "extractShaFromCheckRunContext", { enumerable: true, get: function () { return sha_getter_1.extractShaFromCheckRunContext; } });
+Object.defineProperty(exports, "extractShaFromPullRequestContext", { enumerable: true, get: function () { return sha_getter_1.extractShaFromPullRequestContext; } });
 var utils_1 = require("../utils");
 var pull_number_getter_1 = require("./pull_number_getter");
-exports.parsePullRequestNumberFromPullRequestContext = pull_number_getter_1.parsePullRequestNumberFromPullRequestContext;
-exports.parsePullRequestNumbersFromCheckRunContext = pull_number_getter_1.parsePullRequestNumbersFromCheckRunContext;
+Object.defineProperty(exports, "parsePullRequestNumberFromPullRequestContext", { enumerable: true, get: function () { return pull_number_getter_1.parsePullRequestNumberFromPullRequestContext; } });
+Object.defineProperty(exports, "parsePullRequestNumbersFromCheckRunContext", { enumerable: true, get: function () { return pull_number_getter_1.parsePullRequestNumbersFromCheckRunContext; } });
 /* eslint-enable @typescript-eslint/no-unused-vars */
 var utils_2 = require("../utils");
 var create_status_1 = require("./create_status");
 var pull_getter_1 = require("./pull_getter");
-exports.extractPullRequestsFromCheckRunContext = pull_getter_1.extractPullRequestsFromCheckRunContext;
+Object.defineProperty(exports, "extractPullRequestsFromCheckRunContext", { enumerable: true, get: function () { return pull_getter_1.extractPullRequestsFromCheckRunContext; } });
 var config_getter_1 = require("./config_getter");
-exports.fetchConfig = config_getter_1.fetchConfig;
+Object.defineProperty(exports, "fetchConfig", { enumerable: true, get: function () { return config_getter_1.fetchConfig; } });
 var utils_3 = require("../utils");
 var utils_4 = require("../utils");
 /**
@@ -77,15 +78,15 @@ var CheckGroup = /** @class */ (function () {
                         return [4 /*yield*/, this.files()];
                     case 1:
                         filenames = _b.sent();
-                        this.context.log.info("Files are: " + JSON.stringify(filenames));
-                        subprojs = utils_3.matchFilenamesToSubprojects(filenames, this.config.subProjects);
-                        expectedChecks = utils_2.collectExpectedChecks(subprojs);
-                        this.context.log.info("Expected checks are: " + JSON.stringify(expectedChecks));
+                        this.context.log.info("Files are: ".concat(JSON.stringify(filenames)));
+                        subprojs = (0, utils_3.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
+                        expectedChecks = (0, utils_2.collectExpectedChecks)(subprojs);
+                        this.context.log.info("Expected checks are: ".concat(JSON.stringify(expectedChecks)));
                         return [4 /*yield*/, this.getPostedChecks(this.sha)];
                     case 2:
                         postedChecks = _b.sent();
-                        this.context.log.info("Posted checks are: " + JSON.stringify(postedChecks));
-                        conclusion = utils_4.satisfyExpectedChecks(subprojs, postedChecks);
+                        this.context.log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
+                        conclusion = (0, utils_4.satisfyExpectedChecks)(subprojs, postedChecks);
                         if (!!(config_1.defaultCheckId in postedChecks)) return [3 /*break*/, 4];
                         this.context.log.info("First time run. Post starting check.");
                         return [4 /*yield*/, this.postStartingCheck(this.config.customServiceName, config_1.startCheckTitle, config_1.startCheckSummary, config_1.startCheckDetails)];
@@ -95,20 +96,20 @@ var CheckGroup = /** @class */ (function () {
                     case 4:
                         if (!(conclusion === "all_passing")) return [3 /*break*/, 6];
                         this.context.log.info("All expected checks passed.");
-                        return [4 /*yield*/, this.postPassingCheck(this.config.customServiceName, utils_1.generateSuccessTitle(subprojs, postedChecks), utils_1.generateProgressSummary(subprojs, postedChecks), utils_1.generateProgressDetails(subprojs, postedChecks, this.config))];
+                        return [4 /*yield*/, this.postPassingCheck(this.config.customServiceName, (0, utils_1.generateSuccessTitle)(subprojs, postedChecks), (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
                     case 5:
                         _b.sent();
                         return [3 /*break*/, 10];
                     case 6:
                         if (!(conclusion === "has_failure")) return [3 /*break*/, 8];
                         this.context.log.info("Some of the expected checks failed.");
-                        return [4 /*yield*/, this.postFailingCheck(this.config.customServiceName, utils_1.generateFailingTitle(subprojs, postedChecks), utils_1.generateProgressSummary(subprojs, postedChecks), utils_1.generateProgressDetails(subprojs, postedChecks, this.config))];
+                        return [4 /*yield*/, this.postFailingCheck(this.config.customServiceName, (0, utils_1.generateFailingTitle)(subprojs, postedChecks), (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
                     case 7:
                         _b.sent();
                         return [3 /*break*/, 10];
                     case 8:
                         this.context.log.info("Expected checks are still pending.");
-                        return [4 /*yield*/, this.postUpdatingCheck(this.config.customServiceName, utils_1.generateProgressTitle(subprojs, postedChecks), utils_1.generateProgressSummary(subprojs, postedChecks), utils_1.generateProgressDetails(subprojs, postedChecks, this.config))];
+                        return [4 /*yield*/, this.postUpdatingCheck(this.config.customServiceName, (0, utils_1.generateProgressTitle)(subprojs, postedChecks), (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
                     case 9:
                         _b.sent();
                         _b.label = 10;
@@ -143,7 +144,7 @@ var CheckGroup = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.context.log.info("Fetch posted check runs for " + sha);
+                        this.context.log.info("Fetch posted check runs for ".concat(sha));
                         return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.checks.listForRef, this.context.repo({
                                 ref: sha,
                             }), function (response) { return response.data; })];
@@ -197,7 +198,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, create_status_1.createStatus(this.context, undefined, "queued", name, title, summary, details, this.startTime, this.sha)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "queued", name, title, summary, details, this.startTime, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -212,7 +213,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, create_status_1.createStatus(this.context, undefined, "in_progress", name, title, summary, details, this.startTime, this.sha)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "in_progress", name, title, summary, details, this.startTime, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -227,7 +228,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, create_status_1.createStatus(this.context, "success", "completed", name, title, summary, details, this.startTime, this.sha)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "success", "completed", name, title, summary, details, this.startTime, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -242,7 +243,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, create_status_1.createStatus(this.context, "failure", "completed", name, title, summary, details, this.startTime, this.sha)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "failure", "completed", name, title, summary, details, this.startTime, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();

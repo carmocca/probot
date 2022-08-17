@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fetchConfig = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 var config_1 = require("../config");
@@ -47,7 +48,7 @@ var utils_1 = require("../utils");
  * @param context The base Probot context which is even independent.
  * @returns The configuration or default configuration if non exists.
  */
-exports.fetchConfig = function (
+var fetchConfig = function (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 context) { return __awaiter(void 0, void 0, void 0, function () {
     var configData;
@@ -56,7 +57,8 @@ context) { return __awaiter(void 0, void 0, void 0, function () {
             case 0: return [4 /*yield*/, context.config(config_1.configPath)];
             case 1:
                 configData = (_a.sent());
-                return [2 /*return*/, utils_1.parseUserConfig(configData)];
+                return [2 /*return*/, (0, utils_1.parseUserConfig)(configData)];
         }
     });
 }); };
+exports.fetchConfig = fetchConfig;

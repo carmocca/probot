@@ -3,6 +3,7 @@
  * @module PopulateSubProjects
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.populateSubprojects = exports.parseProjectChecks = exports.parseProjectPaths = exports.parseProjectId = void 0;
 /**
  * Parses the structured ID into sub-project data from the raw user config.
  *
@@ -45,7 +46,7 @@ function parseProjectPaths(subprojData, subprojConfig, config) {
     else {
         config.debugInfo.push({
             configError: true,
-            configErrorMsg: ":warning: Essential fields missing from config for project " + subprojConfig.id + ": paths",
+            configErrorMsg: ":warning: Essential fields missing from config for project ".concat(subprojConfig.id, ": paths"),
         });
     }
 }
@@ -73,7 +74,7 @@ function parseProjectChecks(subprojData, subprojConfig, config) {
     else {
         config.debugInfo.push({
             configError: true,
-            configErrorMsg: ":warning: Essential fields missing from config for project " + subprojConfig.id + ": checks",
+            configErrorMsg: ":warning: Essential fields missing from config for project ".concat(subprojConfig.id, ": checks"),
         });
     }
 }
@@ -101,7 +102,7 @@ function populateSubprojects(configData, config) {
             catch (err) {
                 config.debugInfo.push({
                     configError: true,
-                    configErrorMsg: "Error adding sub-project from data:\n " + JSON.stringify(subprojData),
+                    configErrorMsg: "Error adding sub-project from data:\n ".concat(JSON.stringify(subprojData)),
                 });
             }
         });

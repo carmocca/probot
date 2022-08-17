@@ -40,20 +40,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkRunEventHandler = exports.pullRequestEventHandler = void 0;
 var core_1 = require("./core");
 var trigger_filter_1 = require("./core/trigger_filter");
-exports.pullRequestEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
+var pullRequestEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
     var startTime, sha, config, pullRequestNumber, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 context.log.info('Pull request open/reopen event detected');
                 startTime = new Date().toISOString();
-                sha = core_1.extractShaFromPullRequestContext(context);
-                return [4 /*yield*/, core_1.fetchConfig(context)];
+                sha = (0, core_1.extractShaFromPullRequestContext)(context);
+                return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
-                pullRequestNumber = core_1.parsePullRequestNumberFromPullRequestContext(context);
+                pullRequestNumber = (0, core_1.parsePullRequestNumberFromPullRequestContext)(context);
                 core = new core_1.CheckGroup(pullRequestNumber, config, context, sha, startTime);
                 return [4 /*yield*/, core.run()];
             case 2:
@@ -62,25 +63,26 @@ exports.pullRequestEventHandler = function (context) { return __awaiter(void 0, 
         }
     });
 }); };
-exports.checkRunEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
+exports.pullRequestEventHandler = pullRequestEventHandler;
+var checkRunEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
     var config, pullRequests, startTime, _i, pullRequests_1, pullRequest, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, core_1.fetchConfig(context)];
+            case 0: return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
-                context.log.info("Check run event detected with ID " + config.customServiceName);
-                if (trigger_filter_1.isTriggeredBySelf(context, config)) {
+                context.log.info("Check run event detected with ID ".concat(config.customServiceName));
+                if ((0, trigger_filter_1.isTriggeredBySelf)(context, config)) {
                     return [2 /*return*/];
                 }
-                pullRequests = core_1.extractPullRequestsFromCheckRunContext(context);
+                pullRequests = (0, core_1.extractPullRequestsFromCheckRunContext)(context);
                 startTime = new Date().toISOString();
                 _i = 0, pullRequests_1 = pullRequests;
                 _a.label = 2;
             case 2:
                 if (!(_i < pullRequests_1.length)) return [3 /*break*/, 5];
                 pullRequest = pullRequests_1[_i];
-                context.log.info("Check pull request #" + pullRequest.number + " and sha " + pullRequest.sha + ".");
+                context.log.info("Check pull request #".concat(pullRequest.number, " and sha ").concat(pullRequest.sha, "."));
                 core = new core_1.CheckGroup(pullRequest.number, config, context, pullRequest.sha, startTime);
                 return [4 /*yield*/, core.run()];
             case 3:
@@ -93,3 +95,4 @@ exports.checkRunEventHandler = function (context) { return __awaiter(void 0, voi
         }
     });
 }); };
+exports.checkRunEventHandler = checkRunEventHandler;

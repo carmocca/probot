@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.satisfyExpectedChecks = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /**
  * Checks if all the sub-project requirements are satisfied.
@@ -19,7 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * * "pending" means there is no failure but some
  *   checks are pending or missing.
  */
-exports.satisfyExpectedChecks = function (subProjs, checksStatusLookup) {
+var satisfyExpectedChecks = function (subProjs, checksStatusLookup) {
     var result = "all_passing";
     subProjs.forEach(function (subProj) {
         subProj.checks.forEach(function (check) {
@@ -40,3 +41,4 @@ exports.satisfyExpectedChecks = function (subProjs, checksStatusLookup) {
     });
     return result;
 };
+exports.satisfyExpectedChecks = satisfyExpectedChecks;

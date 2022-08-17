@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isTriggeredBySelf = void 0;
 var config_1 = require("../config");
 /**
  * Checks if the run is triggered by the check status posted
@@ -13,8 +14,8 @@ var config_1 = require("../config");
  * @param {Context<"check_run">} context
  * @param {CheckGroupConfig} config
  **/
-exports.isTriggeredBySelf = function (context, config) {
-    context.log.info("\n    Compare check name " + context.payload["check_run"]["name"] + "\n    and self service name " + config.customServiceName + ".\n  ");
+var isTriggeredBySelf = function (context, config) {
+    context.log.info("\n    Compare check name ".concat(context.payload["check_run"]["name"], "\n    and self service name ").concat(config.customServiceName, ".\n  "));
     if (context.payload["check_run"]["name"] == config.customServiceName ||
         // TODO(@tianhaoz95): remove this check once there is a better approach.
         // This is needed for now because in the test repository at
@@ -32,3 +33,4 @@ exports.isTriggeredBySelf = function (context, config) {
     }
     return false;
 };
+exports.isTriggeredBySelf = isTriggeredBySelf;

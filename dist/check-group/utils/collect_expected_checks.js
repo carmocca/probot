@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.collectExpectedChecks = void 0;
 /* eslint-enable @typescript-eslint/no-unused-vars */
 /**
  * Collect a list of expected passing checks given a
@@ -11,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param configs A list of sub-project configurations.
  * @returns A list of check IDs.
  */
-exports.collectExpectedChecks = function (configs) {
+var collectExpectedChecks = function (configs) {
     var requiredChecks = [];
     var checksLookup = {};
     configs.forEach(function (config) {
@@ -29,3 +30,4 @@ exports.collectExpectedChecks = function (configs) {
     });
     return requiredChecks;
 };
+exports.collectExpectedChecks = collectExpectedChecks;
