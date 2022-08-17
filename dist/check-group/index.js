@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-enable @typescript-eslint/no-unused-vars */
 var handlers_1 = require("./handlers");
 function checkGroupApp(app) {
     var _this = this;
