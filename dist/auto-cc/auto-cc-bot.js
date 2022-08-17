@@ -36,11 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var subscriptions_1 = require("./subscriptions");
 var utils_1 = require("./utils");
 function myBot(app) {
     var _this = this;
-    var tracker = new utils_1.CachedIssueTracker(app, 'tracking_issue', subscriptions_1.parseSubscriptions);
+    var tracker = new utils_1.CachedIssueTracker(app, 'tracking_issue', utils_1.parseSubscriptions);
     function loadSubscriptions(context) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

@@ -1,5 +1,4 @@
-import {parseSubscriptions} from './subscriptions';
-import {CachedIssueTracker} from './utils';
+import {CachedIssueTracker, parseSubscriptions} from './utils';
 import {Probot, Context} from 'probot';
 
 function myBot(app: Probot): void {
