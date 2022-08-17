@@ -10,21 +10,12 @@ Add an issue to your project like https://github.com/pytorch/pytorch/issues/2442
 and add a `.github/lightning-probot.yml` file with:
 
 ```yml
-tracking_issue: 24422
+# https://github.com/Lightning-AI/lightning/issues/10530
+tracking_issue: 10530
 ```
 
 Based on who is listed in the tracking issue, the bot will automatically
 CC people when labels are added to an issue.
-
-## auto-label-bot (DISABLED)
-
-* If an issue is labeled **high priority**, also label it
-  **triage review**
-* If an issue is labeled **topic: flaky-tests**, also label it
-  **high priority** and **triage review**
-* If an issue or pull request contains a regex in its title, label
-  it accordingly, e.g., a title containing 'ROCm' would yield the
-  **module: rocm** label.
 
 ## Setup
 
@@ -35,12 +26,6 @@ yarn install
 # Build the project
 yarn build
 ```
-
-## Live testing as a GitHub App
-
-If you want to smoketest the bot on a test repository, you'll need to
-create a GitHub app.  Go to the webpage from probot; it will walk
-through the process.
 
 ## Deploying GitHub Actions
 
@@ -55,4 +40,4 @@ https://github.com/PyTorchLightning/pytorch-lightning
 
 ## License
 
-[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org), 2021 Carlos Mocholí <carlos@grid.ai> (https://pytorchlightning.ai)
+[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org), 2022 Carlos Mocholí <carlos@lightning.ai> (https://lightning.ai)
