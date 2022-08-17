@@ -17,6 +17,10 @@ tracking_issue: 10530
 Based on who is listed in the tracking issue, the bot will automatically
 CC people when labels are added to an issue.
 
+## check-group
+
+See https://github.com/tianhaoz95/check-group/blob/master/README.md
+
 ## Setup
 
 ```sh
@@ -40,4 +44,6 @@ https://github.com/PyTorchLightning/pytorch-lightning
 
 ## License
 
-[ISC](LICENSE) © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org), 2022 Carlos Mocholí <carlos@lightning.ai> (https://lightning.ai)
+(cc-bot) ISC © 2019 Edward Z. Yang <ezyang@fb.com> (https://pytorch.org)
+(check-group) ISC © 2020 Tianhao Zhou tianhaoz@umich.edu
+ISC © 2022 Carlos Mocholí <carlos@lightning.ai> (https://lightning.ai)

@@ -1,8 +1,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-/* eslint-disable max-lines */
-var types_1 = require("@sentry/types");
 var utils_1 = require("@sentry/utils");
+var flags_1 = require("./flags");
 var scope_1 = require("./scope");
 var session_1 = require("./session");
 /**
@@ -113,7 +112,7 @@ var Hub = /** @class */ (function () {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     Hub.prototype.captureException = function (exception, hint) {
-        var eventId = (this._lastEventId = utils_1.uuid4());
+        var eventId = (this._lastEventId = hint && hint.event_id ? hint.event_id : utils_1.uuid4());
         var finalHint = hint;
         // If there's no explicit hint provided, mimic the same thing that would happen
         // in the minimal itself to create a consistent behavior.
@@ -139,7 +138,7 @@ var Hub = /** @class */ (function () {
      * @inheritDoc
      */
     Hub.prototype.captureMessage = function (message, level, hint) {
-        var eventId = (this._lastEventId = utils_1.uuid4());
+        var eventId = (this._lastEventId = hint && hint.event_id ? hint.event_id : utils_1.uuid4());
         var finalHint = hint;
         // If there's no explicit hint provided, mimic the same thing that would happen
         // in the minimal itself to create a consistent behavior.
@@ -165,7 +164,7 @@ var Hub = /** @class */ (function () {
      * @inheritDoc
      */
     Hub.prototype.captureEvent = function (event, hint) {
-        var eventId = utils_1.uuid4();
+        var eventId = hint && hint.event_id ? hint.event_id : utils_1.uuid4();
         if (event.type !== 'transaction') {
             this._lastEventId = eventId;
         }
@@ -279,7 +278,7 @@ var Hub = /** @class */ (function () {
             return client.getIntegration(integration);
         }
         catch (_oO) {
-            utils_1.logger.warn("Cannot retrieve integration " + integration.id + " from the current Hub");
+            flags_1.IS_DEBUG_BUILD && utils_1.logger.warn("Cannot retrieve integration " + integration.id + " from the current Hub");
             return null;
         }
     };
@@ -317,11 +316,17 @@ var Hub = /** @class */ (function () {
      * @inheritDoc
      */
     Hub.prototype.endSession = function () {
-        var _a, _b, _c, _d, _e;
-        (_c = (_b = (_a = this.getStackTop()) === null || _a === void 0 ? void 0 : _a.scope) === null || _b === void 0 ? void 0 : _b.getSession()) === null || _c === void 0 ? void 0 : _c.close();
+        var layer = this.getStackTop();
+        var scope = layer && layer.scope;
+        var session = scope && scope.getSession();
+        if (session) {
+            session.close();
+        }
         this._sendSessionUpdate();
         // the session is over; take it off of the scope
-        (_e = (_d = this.getStackTop()) === null || _d === void 0 ? void 0 : _d.scope) === null || _e === void 0 ? void 0 : _e.setSession();
+        if (scope) {
+            scope.setSession();
+        }
     };
     /**
      * @inheritDoc
@@ -337,8 +342,8 @@ var Hub = /** @class */ (function () {
         if (scope) {
             // End existing session if there's one
             var currentSession = scope.getSession && scope.getSession();
-            if (currentSession && currentSession.status === types_1.SessionStatus.Ok) {
-                currentSession.update({ status: types_1.SessionStatus.Exited });
+            if (currentSession && currentSession.status === 'ok') {
+                currentSession.update({ status: 'exited' });
             }
             this.endSession();
             // Afterwards we set the new session on the scope
@@ -394,7 +399,7 @@ var Hub = /** @class */ (function () {
         if (sentry && sentry.extensions && typeof sentry.extensions[method] === 'function') {
             return sentry.extensions[method].apply(this, args);
         }
-        utils_1.logger.warn("Extension method " + method + " couldn't be found, doing nothing.");
+        flags_1.IS_DEBUG_BUILD && utils_1.logger.warn("Extension method " + method + " couldn't be found, doing nothing.");
     };
     return Hub;
 }());
@@ -456,7 +461,7 @@ exports.getCurrentHub = getCurrentHub;
  */
 // eslint-disable-next-line deprecation/deprecation
 function getActiveDomain() {
-    utils_1.logger.warn('Function `getActiveDomain` is deprecated and will be removed in a future version.');
+    flags_1.IS_DEBUG_BUILD && utils_1.logger.warn('Function `getActiveDomain` is deprecated and will be removed in a future version.');
     var sentry = getMainCarrier().__SENTRY__;
     return sentry && sentry.extensions && sentry.extensions.domain && sentry.extensions.domain.active;
 }
@@ -466,9 +471,9 @@ exports.getActiveDomain = getActiveDomain;
  * @returns discovered hub
  */
 function getHubFromActiveDomain(registry) {
-    var _a, _b, _c;
     try {
-        var activeDomain = (_c = (_b = (_a = getMainCarrier().__SENTRY__) === null || _a === void 0 ? void 0 : _a.extensions) === null || _b === void 0 ? void 0 : _b.domain) === null || _c === void 0 ? void 0 : _c.active;
+        var sentry = getMainCarrier().__SENTRY__;
+        var activeDomain = sentry && sentry.extensions && sentry.extensions.domain && sentry.extensions.domain.active;
         // If there's no active domain, just return global hub
         if (!activeDomain) {
             return getHubFromCarrier(registry);
@@ -500,11 +505,7 @@ function hasHubOnCarrier(carrier) {
  * @hidden
  */
 function getHubFromCarrier(carrier) {
-    if (carrier && carrier.__SENTRY__ && carrier.__SENTRY__.hub)
-        return carrier.__SENTRY__.hub;
-    carrier.__SENTRY__ = carrier.__SENTRY__ || {};
-    carrier.__SENTRY__.hub = new Hub();
-    return carrier.__SENTRY__.hub;
+    return utils_1.getGlobalSingleton('hub', function () { return new Hub(); }, carrier);
 }
 exports.getHubFromCarrier = getHubFromCarrier;
 /**
@@ -516,8 +517,8 @@ exports.getHubFromCarrier = getHubFromCarrier;
 function setHubOnCarrier(carrier, hub) {
     if (!carrier)
         return false;
-    carrier.__SENTRY__ = carrier.__SENTRY__ || {};
-    carrier.__SENTRY__.hub = hub;
+    var __SENTRY__ = (carrier.__SENTRY__ = carrier.__SENTRY__ || {});
+    __SENTRY__.hub = hub;
     return true;
 }
 exports.setHubOnCarrier = setHubOnCarrier;
