@@ -4,14 +4,7 @@ import { SentryRequestType } from './request';
 import { Response } from './response';
 import { SdkMetadata } from './sdkmetadata';
 import { Session, SessionAggregates } from './session';
-export declare enum Outcome {
-    BeforeSend = "before_send",
-    EventProcessor = "event_processor",
-    NetworkError = "network_error",
-    QueueOverflow = "queue_overflow",
-    RateLimitBackoff = "ratelimit_backoff",
-    SampleRate = "sample_rate"
-}
+export declare type Outcome = 'before_send' | 'event_processor' | 'network_error' | 'queue_overflow' | 'ratelimit_backoff' | 'sample_rate';
 /** Transport used sending data to Sentry */
 export interface Transport {
     /**

@@ -28,6 +28,11 @@ var Scope = /** @class */ (function () {
         this._extra = {};
         /** Contexts */
         this._contexts = {};
+        /**
+         * A place to stash data which is needed at some point in the SDK's event processing pipeline but which shouldn't get
+         * sent to Sentry
+         */
+        this._sdkProcessingMetadata = {};
     }
     /**
      * Inherit values from the parent scope.
@@ -193,19 +198,10 @@ var Scope = /** @class */ (function () {
      * @inheritDoc
      */
     Scope.prototype.getTransaction = function () {
-        var _a, _b, _c, _d;
-        // often, this span will be a transaction, but it's not guaranteed to be
+        // Often, this span (if it exists at all) will be a transaction, but it's not guaranteed to be. Regardless, it will
+        // have a pointer to the currently-active transaction.
         var span = this.getSpan();
-        // try it the new way first
-        if ((_a = span) === null || _a === void 0 ? void 0 : _a.transaction) {
-            return (_b = span) === null || _b === void 0 ? void 0 : _b.transaction;
-        }
-        // fallback to the old way (known bug: this only finds transactions with sampled = true)
-        if ((_d = (_c = span) === null || _c === void 0 ? void 0 : _c.spanRecorder) === null || _d === void 0 ? void 0 : _d.spans[0]) {
-            return span.spanRecorder.spans[0];
-        }
-        // neither way found a transaction
-        return undefined;
+        return span && span.transaction;
     };
     /**
      * @inheritDoc
@@ -324,7 +320,6 @@ var Scope = /** @class */ (function () {
      * @hidden
      */
     Scope.prototype.applyToEvent = function (event, hint) {
-        var _a;
         if (this._extra && Object.keys(this._extra).length) {
             event.extra = tslib_1.__assign(tslib_1.__assign({}, this._extra), event.extra);
         }
@@ -348,7 +343,7 @@ var Scope = /** @class */ (function () {
         // errors with transaction and it relies on that.
         if (this._span) {
             event.contexts = tslib_1.__assign({ trace: this._span.getTraceContext() }, event.contexts);
-            var transactionName = (_a = this._span.transaction) === null || _a === void 0 ? void 0 : _a.name;
+            var transactionName = this._span.transaction && this._span.transaction.name;
             if (transactionName) {
                 event.tags = tslib_1.__assign({ transaction: transactionName }, event.tags);
             }
@@ -356,7 +351,15 @@ var Scope = /** @class */ (function () {
         this._applyFingerprint(event);
         event.breadcrumbs = tslib_1.__spread((event.breadcrumbs || []), this._breadcrumbs);
         event.breadcrumbs = event.breadcrumbs.length > 0 ? event.breadcrumbs : undefined;
+        event.sdkProcessingMetadata = this._sdkProcessingMetadata;
         return this._notifyEventProcessors(tslib_1.__spread(getGlobalEventProcessors(), this._eventProcessors), event, hint);
+    };
+    /**
+     * Add data which will be accessible during event processing but won't get sent to Sentry
+     */
+    Scope.prototype.setSDKProcessingMetadata = function (newData) {
+        this._sdkProcessingMetadata = tslib_1.__assign(tslib_1.__assign({}, this._sdkProcessingMetadata), newData);
+        return this;
     };
     /**
      * This will be called after {@link applyToEvent} is finished.
@@ -427,12 +430,7 @@ exports.Scope = Scope;
  * Returns the global event processors.
  */
 function getGlobalEventProcessors() {
-    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access  */
-    var global = utils_1.getGlobalObject();
-    global.__SENTRY__ = global.__SENTRY__ || {};
-    global.__SENTRY__.globalEventProcessors = global.__SENTRY__.globalEventProcessors || [];
-    return global.__SENTRY__.globalEventProcessors;
-    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
+    return utils_1.getGlobalSingleton('globalEventProcessors', function () { return []; });
 }
 /**
  * Add a EventProcessor to be kept globally.

@@ -36,6 +36,13 @@ export declare class Scope implements ScopeInterface {
     /** Request Mode Session Status */
     protected _requestSession?: RequestSession;
     /**
+     * A place to stash data which is needed at some point in the SDK's event processing pipeline but which shouldn't get
+     * sent to Sentry
+     */
+    protected _sdkProcessingMetadata?: {
+        [key: string]: unknown;
+    };
+    /**
      * Inherit values from the parent scope.
      * @param scope to clone.
      */
@@ -149,6 +156,12 @@ export declare class Scope implements ScopeInterface {
      * @hidden
      */
     applyToEvent(event: Event, hint?: EventHint): PromiseLike<Event | null>;
+    /**
+     * Add data which will be accessible during event processing but won't get sent to Sentry
+     */
+    setSDKProcessingMetadata(newData: {
+        [key: string]: unknown;
+    }): this;
     /**
      * This will be called after {@link applyToEvent} is finished.
      */
