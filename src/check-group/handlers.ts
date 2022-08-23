@@ -6,7 +6,6 @@
 import {
   CheckGroup,
   extractPullRequestsFromCheckRunContext,
-  extractShaFromPullRequestContext,
   fetchConfig,
   parsePullRequestNumberFromPullRequestContext
 } from './core';
@@ -18,7 +17,7 @@ export const pullRequestEventHandler = async (
   context: Context<'pull_request'>
 ): Promise<void> => {
   context.log.info('Pull request open/reopen event detected');
-  const sha = extractShaFromPullRequestContext(context);
+  const sha = process.env['GITHUB_SHA'];
   const config = await fetchConfig(context);
   const pullRequestNumber =
     parsePullRequestNumberFromPullRequestContext(context);

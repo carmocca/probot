@@ -10,10 +10,6 @@ import {
   startCheckSummary,
 } from "../config";
 import {
-  extractShaFromCheckRunContext,
-  extractShaFromPullRequestContext,
-} from "./sha_getter";
-import {
   generateProgressDetails,
   generateProgressSummary,
 } from "../utils";
@@ -236,9 +232,7 @@ export class CheckGroup {
 
 export {
   fetchConfig,
-  extractShaFromPullRequestContext,
   parsePullRequestNumberFromPullRequestContext,
   parsePullRequestNumbersFromCheckRunContext,
-  extractShaFromCheckRunContext,
   extractPullRequestsFromCheckRunContext,
 };

@@ -49,7 +49,7 @@ var pullRequestEventHandler = function (context) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 context.log.info('Pull request open/reopen event detected');
-                sha = (0, core_1.extractShaFromPullRequestContext)(context);
+                sha = process.env['GITHUB_SHA'];
                 return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
