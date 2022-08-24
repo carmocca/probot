@@ -10,7 +10,7 @@ import { parseUserConfig } from "../utils";
  * @returns The configuration or default configuration if non exists.
  */
 export const fetchConfig = async (
-  context: Context<"check_run"> | Context<"pull_request">,
+  context: Context,
 ): Promise<CheckGroupConfig> => {
   const configData: Record<string, unknown> = (await context.config(
     configPath,

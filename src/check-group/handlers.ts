@@ -3,7 +3,7 @@ import {Context} from 'probot';
 import {isTriggeredBySelf} from './core/trigger_filter';
 
 export const pullRequestEventHandler = async (
-  context: Context<'pull_request'>
+  context: Context
 ): Promise<void> => {
   const sha = process.env['GITHUB_SHA'];
   const pullRequestNumber = context.pullRequest().pull_number;
@@ -15,9 +15,7 @@ export const pullRequestEventHandler = async (
   await core.run();
 };
 
-export const checkRunEventHandler = async (
-  context: Context<'check_run'>
-): Promise<void> => {
+export const checkRunEventHandler = async (context: Context): Promise<void> => {
   const sha = process.env['GITHUB_SHA'];
   const pullRequestNumber = context.pullRequest().pull_number;
   context.log.info(

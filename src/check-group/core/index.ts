@@ -26,14 +26,14 @@ import { satisfyExpectedChecks } from "../utils";
 export class CheckGroup {
   pullRequestNumber: number;
   config: CheckGroupConfig;
-  context: Context<"check_run"> | Context<"pull_request">;
+  context: Context;
   sha: string;
   startTime: string;
 
   constructor(
     pullRequestNumber: number,
     config: CheckGroupConfig,
-    context: Context<"check_run"> | Context<"pull_request">,
+    context: Context,
     sha: string,
   ) {
     this.pullRequestNumber = pullRequestNumber;

@@ -10,6 +10,10 @@ function checkGroupApp(app: Probot): void {
     await pullRequestEventHandler(context);
   });
 
+  app.on('issue_comment', async context => {
+    await pullRequestEventHandler(context);
+  });
+
   app.on('check_run', async context => {
     await checkRunEventHandler(context);
   });

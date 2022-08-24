@@ -11,11 +11,11 @@ import { Context } from "probot";
  * a new run since it is a check status change as well. To
  * prevent a infinite triggering loop, we should bail if we find
  * that the check status is changed by the app itself.
- * @param {Context<"check_run">} context
+ * @param {Context} context
  * @param {CheckGroupConfig} config
  **/
 export const isTriggeredBySelf = (
-  context: Context<"check_run">,
+  context: Context,
   config: CheckGroupConfig,
 ): boolean => {
   context.log.info(`
