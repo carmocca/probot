@@ -13,7 +13,12 @@ const eventHandler = async (context: Context): Promise<void> => {
   const name = context.name;
   if (name === 'check_run') {
     const payload = context.payload as CheckRunEvent;
-    pullRequestNumber = payload.check_run.pull_requests[0].number;
+    const pullRequests = payload.check_run.pull_requests;
+    if (!pullRequests) {
+      // no associated pull request
+      return
+    }
+    pullRequestNumber = pullRequests[0].number;
   } else if (name === 'pull_request') {
     const payload = context.payload as PullRequestEvent;
     pullRequestNumber = payload.pull_request.number;

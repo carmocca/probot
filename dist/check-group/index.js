@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("./core");
 var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var sha, pullRequestNumber, name, payload, payload, payload, config, core;
+    var sha, pullRequestNumber, name, payload, pullRequests, payload, payload, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -46,7 +46,12 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
                 name = context.name;
                 if (name === 'check_run') {
                     payload = context.payload;
-                    pullRequestNumber = payload.check_run.pull_requests[0].number;
+                    pullRequests = payload.check_run.pull_requests;
+                    if (!pullRequests) {
+                        // no associated pull request
+                        return [2 /*return*/];
+                    }
+                    pullRequestNumber = pullRequests[0].number;
                 }
                 else if (name === 'pull_request') {
                     payload = context.payload;
