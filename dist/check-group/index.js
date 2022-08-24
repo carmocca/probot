@@ -38,13 +38,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("./core");
 var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var sha, pullRequestNumber, config, core;
+    var sha, pullRequestNumber, name, payload, payload, payload, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 sha = process.env['GITHUB_SHA'];
-                pullRequestNumber = context.pullRequest().pull_number;
-                context.log.info("".concat(context.name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
+                name = context.name;
+                if (name === 'check_run') {
+                    payload = context.payload;
+                    pullRequestNumber = payload.check_run.pull_requests[0].number;
+                }
+                else if (name === 'pull_request') {
+                    payload = context.payload;
+                    pullRequestNumber = payload.pull_request.number;
+                }
+                else if (name === 'issue_comment') {
+                    payload = context.payload;
+                    if (!payload.issue.pull_request) {
+                        // not a pull request
+                        return [2 /*return*/];
+                    }
+                    pullRequestNumber = context.pullRequest().pull_number;
+                }
+                else {
+                    throw new Error("name ".concat(name, " not implemented"));
+                }
+                context.log.info("".concat(name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
                 return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
