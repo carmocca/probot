@@ -2,7 +2,7 @@ import {Probot, Context} from 'probot';
 import {CheckGroup, fetchConfig} from './core';
 
 const eventHandler = async (context: Context): Promise<void> => {
-  const sha = process.env['GITHUB_SHA'];
+  const sha = process.env['GITHUB_SHA']!;
   const pullRequestNumber = context.pullRequest().pull_number;
   context.log.info(
     `${context.name} event detected for PR ${pullRequestNumber}, SHA ${sha}`

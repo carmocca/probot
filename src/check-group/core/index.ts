@@ -28,7 +28,6 @@ export class CheckGroup {
   config: CheckGroupConfig;
   context: Context;
   sha: string;
-  startTime: string;
 
   constructor(
     pullRequestNumber: number,
