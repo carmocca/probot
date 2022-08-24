@@ -37,10 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchConfig = void 0;
-/* eslint-enable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 var config_1 = require("../config");
-/* eslint-enable @typescript-eslint/no-unused-vars */
 var utils_1 = require("../utils");
 /**
  * Fetches the app configuration from the user's repository.
@@ -48,9 +45,7 @@ var utils_1 = require("../utils");
  * @param context The base Probot context which is even independent.
  * @returns The configuration or default configuration if non exists.
  */
-var fetchConfig = function (
-/* eslint-disable @typescript-eslint/no-explicit-any */
-context) { return __awaiter(void 0, void 0, void 0, function () {
+var fetchConfig = function (context) { return __awaiter(void 0, void 0, void 0, function () {
     var configData;
     return __generator(this, function (_a) {
         switch (_a.label) {

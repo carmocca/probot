@@ -1,8 +1,4 @@
 "use strict";
-/**
- * GitHub webhook event handlers
- * @module Handlers
- */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,16 +40,16 @@ exports.checkRunEventHandler = exports.pullRequestEventHandler = void 0;
 var core_1 = require("./core");
 var trigger_filter_1 = require("./core/trigger_filter");
 var pullRequestEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var sha, config, pullRequestNumber, core;
+    var sha, pullRequestNumber, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                context.log.info('Pull request open/reopen event detected');
                 sha = process.env['GITHUB_SHA'];
+                pullRequestNumber = context.pullRequest().pull_number;
+                context.log.info("".concat(context.name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
                 return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
-                pullRequestNumber = (0, core_1.parsePullRequestNumberFromPullRequestContext)(context);
                 core = new core_1.CheckGroup(pullRequestNumber, config, context, sha);
                 return [4 /*yield*/, core.run()];
             case 2:
@@ -64,32 +60,24 @@ var pullRequestEventHandler = function (context) { return __awaiter(void 0, void
 }); };
 exports.pullRequestEventHandler = pullRequestEventHandler;
 var checkRunEventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var config, pullRequests, _i, pullRequests_1, pullRequest, core;
+    var sha, pullRequestNumber, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
+            case 0:
+                sha = process.env['GITHUB_SHA'];
+                pullRequestNumber = context.pullRequest().pull_number;
+                context.log.info("".concat(context.name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
+                return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();
-                context.log.info("Check run event detected with ID ".concat(config.customServiceName));
                 if ((0, trigger_filter_1.isTriggeredBySelf)(context, config)) {
                     return [2 /*return*/];
                 }
-                pullRequests = (0, core_1.extractPullRequestsFromCheckRunContext)(context);
-                _i = 0, pullRequests_1 = pullRequests;
-                _a.label = 2;
-            case 2:
-                if (!(_i < pullRequests_1.length)) return [3 /*break*/, 5];
-                pullRequest = pullRequests_1[_i];
-                context.log.info("Check pull request #".concat(pullRequest.number, " and sha ").concat(pullRequest.sha, "."));
-                core = new core_1.CheckGroup(pullRequest.number, config, context, pullRequest.sha);
+                core = new core_1.CheckGroup(pullRequestNumber, config, context, sha);
                 return [4 /*yield*/, core.run()];
-            case 3:
+            case 2:
                 _a.sent();
-                _a.label = 4;
-            case 4:
-                _i++;
-                return [3 /*break*/, 2];
-            case 5: return [2 /*return*/];
+                return [2 /*return*/];
         }
     });
 }); };

@@ -39,18 +39,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractPullRequestsFromCheckRunContext = exports.extractShaFromCheckRunContext = exports.parsePullRequestNumbersFromCheckRunContext = exports.parsePullRequestNumberFromPullRequestContext = exports.extractShaFromPullRequestContext = exports.fetchConfig = exports.CheckGroup = void 0;
+exports.fetchConfig = exports.CheckGroup = void 0;
 var config_1 = require("../config");
-var sha_getter_1 = require("./sha_getter");
-Object.defineProperty(exports, "extractShaFromCheckRunContext", { enumerable: true, get: function () { return sha_getter_1.extractShaFromCheckRunContext; } });
-Object.defineProperty(exports, "extractShaFromPullRequestContext", { enumerable: true, get: function () { return sha_getter_1.extractShaFromPullRequestContext; } });
 var utils_1 = require("../utils");
-var pull_number_getter_1 = require("./pull_number_getter");
-Object.defineProperty(exports, "parsePullRequestNumberFromPullRequestContext", { enumerable: true, get: function () { return pull_number_getter_1.parsePullRequestNumberFromPullRequestContext; } });
-Object.defineProperty(exports, "parsePullRequestNumbersFromCheckRunContext", { enumerable: true, get: function () { return pull_number_getter_1.parsePullRequestNumbersFromCheckRunContext; } });
 var create_status_1 = require("./create_status");
-var pull_getter_1 = require("./pull_getter");
-Object.defineProperty(exports, "extractPullRequestsFromCheckRunContext", { enumerable: true, get: function () { return pull_getter_1.extractPullRequestsFromCheckRunContext; } });
 var config_getter_1 = require("./config_getter");
 Object.defineProperty(exports, "fetchConfig", { enumerable: true, get: function () { return config_getter_1.fetchConfig; } });
 var utils_2 = require("../utils");

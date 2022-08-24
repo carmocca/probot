@@ -13,14 +13,9 @@ import {
   generateProgressDetails,
   generateProgressSummary,
 } from "../utils";
-import {
-  parsePullRequestNumberFromPullRequestContext,
-  parsePullRequestNumbersFromCheckRunContext,
-} from "./pull_number_getter";
 import type { CheckGroupConfig } from "../types";
 import type { Context } from "probot";
 import { createStatus } from "./create_status";
-import { extractPullRequestsFromCheckRunContext } from "./pull_getter";
 import { fetchConfig } from "./config_getter";
 import { matchFilenamesToSubprojects } from "../utils";
 import { satisfyExpectedChecks } from "../utils";
@@ -230,9 +225,4 @@ export class CheckGroup {
   }
 }
 
-export {
-  fetchConfig,
-  parsePullRequestNumberFromPullRequestContext,
-  parsePullRequestNumbersFromCheckRunContext,
-  extractPullRequestsFromCheckRunContext,
-};
+export {fetchConfig};
