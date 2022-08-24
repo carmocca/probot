@@ -1,26 +1,14 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -60,20 +48,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createStatus = void 0;
-var core = __importStar(require("@actions/core"));
-/**
- * Creates a check in the pull request.
- *
- * @param conclusion The conclusion of the run.
- * @param status The status of the run.
- * @param summary The summary that shows up under the title.
- * @param details The details that shows up under the summary.
- */
-var createStatus = function (conclusion, status, name, summary, details) { return __awaiter(void 0, void 0, void 0, function () {
+var createStatus = function (context, conclusion, status, name, summary, details, sha) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        if (conclusion !== 'success') {
-            core.setFailed("".concat(name, " conclusion: ").concat(conclusion, ", status: ").concat(status, "\n").concat(summary, "\n").concat(details));
-        }
+        context.log.info("".concat(name, " conclusion: ").concat(conclusion, ", status: ").concat(status, "\n").concat(summary, "\n").concat(details));
+        context.octokit.rest.repos.createCommitStatus(__assign(__assign({}, context.repo()), { sha: sha, state: conclusion === 'success' ? 'success' : 'failure', context: name, target_url: "".concat(process.env['GITHUB_SERVER_URL'], "/").concat(process.env['GITHUB_REPOSITORY'], "/actions/runs/").concat(process.env['GITHUB_RUN_ID']), description: summary }));
         return [2 /*return*/];
     });
 }); };

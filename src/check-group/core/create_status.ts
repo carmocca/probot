@@ -1,14 +1,7 @@
-import * as core from "@actions/core";
+import type { Context } from "probot";
 
-/**
- * Creates a check in the pull request.
- *
- * @param conclusion The conclusion of the run.
- * @param status The status of the run.
- * @param summary The summary that shows up under the title.
- * @param details The details that shows up under the summary.
- */
 export const createStatus = async (
+  context: Context,
   conclusion:
     | "success"
     | "failure"
@@ -21,10 +14,17 @@ export const createStatus = async (
   name: string,
   summary: string,
   details: string,
+  sha: string,
 ): Promise<void> => {
-  if (conclusion !== 'success') {
-    core.setFailed(
-      `${name} conclusion: ${conclusion}, status: ${status}\n${summary}\n${details}`
-    )
-  }
+  context.log.info(
+    `${name} conclusion: ${conclusion}, status: ${status}\n${summary}\n${details}`
+  )
+  context.octokit.rest.repos.createCommitStatus({
+    ...context.repo(),
+    sha,
+    state: conclusion === 'success' ? 'success' : 'failure',
+    context: name,
+    target_url: `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`,
+    description: summary
+  })
 };

@@ -166,11 +166,13 @@ export class CheckGroup {
   ): Promise<void> {
     /* eslint-disable */
     await createStatus(
+      this.context,
       undefined,
       "queued",
       name,
       summary,
       details,
+      this.sha
     );
     /* eslint-enable */
   }
@@ -182,11 +184,13 @@ export class CheckGroup {
   ): Promise<void> {
     /* eslint-disable */
     await createStatus(
+      this.context,
       undefined,
       "in_progress",
       name,
       summary,
       details,
+      this.sha
     );
     /* eslint-enable */
   }
@@ -198,11 +202,13 @@ export class CheckGroup {
   ): Promise<void> {
     /* eslint-disable */
     await createStatus(
+      this.context,
       "success",
       "completed",
       name,
       summary,
       details,
+      this.sha
     );
     /* eslint-enable */
   }
@@ -214,11 +220,13 @@ export class CheckGroup {
   ): Promise<void> {
     /* eslint-disable */
     await createStatus(
+      this.context,
       "failure",
       "completed",
       name,
       summary,
       details,
+      this.sha
     );
     /* eslint-enable */
   }

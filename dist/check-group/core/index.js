@@ -186,7 +186,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(undefined, "queued", name, summary, details)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "queued", name, summary, details, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -201,7 +201,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(undefined, "in_progress", name, summary, details)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "in_progress", name, summary, details, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -216,7 +216,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)("success", "completed", name, summary, details)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "success", "completed", name, summary, details, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
@@ -231,7 +231,7 @@ var CheckGroup = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)("failure", "completed", name, summary, details)];
+                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "failure", "completed", name, summary, details, this.sha)];
                     case 1:
                         /* eslint-disable */
                         _a.sent();
