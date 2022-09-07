@@ -38,36 +38,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("./core");
 var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var sha, pullRequestNumber, name, payload, pullRequests, payload, payload, config, core;
+    var sha, name, payload, pullRequestNumber, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 sha = process.env['GITHUB_SHA'];
                 name = context.name;
-                if (name === 'check_run') {
-                    payload = context.payload;
-                    pullRequests = payload.check_run.pull_requests;
-                    if (!pullRequests) {
-                        // no associated pull request
-                        return [2 /*return*/];
-                    }
-                    pullRequestNumber = pullRequests[0].number;
-                }
-                else if (name === 'pull_request') {
-                    payload = context.payload;
-                    pullRequestNumber = payload.pull_request.number;
-                }
-                else if (name === 'issue_comment') {
-                    payload = context.payload;
-                    if (!payload.issue.pull_request) {
-                        // not a pull request
-                        return [2 /*return*/];
-                    }
-                    pullRequestNumber = context.pullRequest().pull_number;
-                }
-                else {
+                if (name !== 'pull_request') {
                     throw new Error("name ".concat(name, " not implemented"));
                 }
+                payload = context.payload;
+                pullRequestNumber = payload.pull_request.number;
                 context.log.info("".concat(name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
                 return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
@@ -83,18 +64,6 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
 function checkGroupApp(app) {
     var _this = this;
     app.on('pull_request', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, eventHandler(context)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    }); }); });
-    app.on('issue_comment', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, eventHandler(context)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    }); }); });
-    app.on('check_run', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, eventHandler(context)];
             case 1: return [2 /*return*/, _a.sent()];

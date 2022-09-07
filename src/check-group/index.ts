@@ -1,38 +1,15 @@
 import {Probot, Context} from 'probot';
-import {
-  CheckRunEvent,
-  PullRequestEvent,
-  IssueCommentCreatedEvent
-} from '@octokit/webhooks-types';
+import {PullRequestEvent} from '@octokit/webhooks-types';
 import {CheckGroup, fetchConfig} from './core';
 
 const eventHandler = async (context: Context): Promise<void> => {
-  const sha = process.env['GITHUB_SHA']!;
-
-  let pullRequestNumber;
+  const sha = process.env['GITHUB_SHA'];
   const name = context.name;
-  if (name === 'check_run') {
-    const payload = context.payload as CheckRunEvent;
-    const pullRequests = payload.check_run.pull_requests;
-    if (!pullRequests) {
-      // no associated pull request
-      return
-    }
-    pullRequestNumber = pullRequests[0].number;
-  } else if (name === 'pull_request') {
-    const payload = context.payload as PullRequestEvent;
-    pullRequestNumber = payload.pull_request.number;
-  } else if (name === 'issue_comment') {
-    const payload = context.payload as IssueCommentCreatedEvent;
-    if (!payload.issue.pull_request) {
-      // not a pull request
-      return;
-    }
-    pullRequestNumber = context.pullRequest().pull_number;
-  } else {
+  if (name !== 'pull_request') {
     throw new Error(`name ${name} not implemented`);
   }
-
+  const payload = context.payload as PullRequestEvent;
+  const pullRequestNumber = payload.pull_request.number;
   context.log.info(
     `${name} event detected for PR ${pullRequestNumber}, SHA ${sha}`
   );
@@ -43,8 +20,6 @@ const eventHandler = async (context: Context): Promise<void> => {
 
 function checkGroupApp(app: Probot): void {
   app.on('pull_request', async context => await eventHandler(context));
-  app.on('issue_comment', async context => await eventHandler(context));
-  app.on('check_run', async context => await eventHandler(context));
 }
 
 export default checkGroupApp;

@@ -3,19 +3,11 @@
  */
 
 import {
-  defaultCheckId,
-  errorCheckDetails,
-  errorCheckSummary,
-  startCheckDetails,
-  startCheckSummary,
-} from "../config";
-import {
   generateProgressDetails,
   generateProgressSummary,
 } from "../utils";
 import type { CheckGroupConfig } from "../types";
 import type { Context } from "probot";
-import { createStatus } from "./create_status";
 import { fetchConfig } from "./config_getter";
 import { matchFilenamesToSubprojects } from "../utils";
 import { satisfyExpectedChecks } from "../utils";
@@ -42,62 +34,34 @@ export class CheckGroup {
   }
 
   async run(): Promise<void> {
-    try {
-      const filenames = await this.files();
-      this.context.log.info(`Files are: ${JSON.stringify(filenames)}`);
-      const subprojs = matchFilenamesToSubprojects(
-        filenames,
-        this.config.subProjects,
-      );
-      this.context.log.info(
-        `Matching subprojects are: ${JSON.stringify(subprojs)}`,
-      );
-      const postedChecks = await this.getPostedChecks(this.sha);
-      this.context.log.info(
-        `Posted checks are: ${JSON.stringify(postedChecks)}`,
-      );
-      const conclusion = satisfyExpectedChecks(subprojs, postedChecks);
-      if (!(defaultCheckId in postedChecks)) {
-        this.context.log.info("First time run. Post starting check.");
-        await this.postStartingCheck(
-          this.config.customServiceName,
-          startCheckSummary,
-          startCheckDetails,
-        );
-      }
-      if (conclusion === "all_passing") {
-        this.context.log.info("All expected checks passed.");
-        await this.postPassingCheck(
-          this.config.customServiceName,
-          generateProgressSummary(subprojs, postedChecks),
-          generateProgressDetails(subprojs, postedChecks, this.config),
-        );
-      } else if (conclusion === "has_failure") {
-        this.context.log.info("Some of the expected checks failed.");
-        await this.postFailingCheck(
-          this.config.customServiceName,
-          generateProgressSummary(subprojs, postedChecks),
-          generateProgressDetails(subprojs, postedChecks, this.config),
-        );
-      } else {
-        this.context.log.info("Expected checks are still pending.");
-        await this.postUpdatingCheck(
-          this.config.customServiceName,
-          generateProgressSummary(subprojs, postedChecks),
-          generateProgressDetails(subprojs, postedChecks, this.config),
-        );
-      }
-    } catch {
-      this.context.log.info("The app crashed.");
-      // TODO(@tianhaoz95): Add a better error message. Consider using
-      // markdown import suggested by
-      // https://stackoverflow.com/questions/44678315/how-to-import-markdown-md-file-in-typescript
-      await this.postFailingCheck(
-        this.config.customServiceName,
-        errorCheckSummary,
-        errorCheckDetails,
-      );
-    }
+    const filenames = await this.files();
+    this.context.log.info(`Files are: ${JSON.stringify(filenames)}`);
+    const subprojs = matchFilenamesToSubprojects(
+      filenames,
+      this.config.subProjects,
+    );
+    this.context.log.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
+
+    let tries = 0;
+    let conclusion = undefined;
+    // IMPORTANT: a timeout should be set in the action workflow
+    const loop = setInterval(
+      async function() {
+        if (conclusion === "success") {
+          clearInterval(loop)
+        }
+        tries += 1;
+        const postedChecks = await this.getPostedChecks(this.sha);
+        this.context.log.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
+        conclusion = satisfyExpectedChecks(subprojs, postedChecks);
+        const summary = generateProgressSummary(subprojs, postedChecks)
+        const details = generateProgressDetails(subprojs, postedChecks, this.config)
+        this.context.log.info(
+          `${this.config.customServiceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
+        )
+      }, 2 * 60 * 1000  // 2 minutes in ms
+    )
+    this.context.log.info("Required checks were successful!")
   }
 
   /**
@@ -154,81 +118,6 @@ export class CheckGroup {
       },
     );
     return filenames;
-  }
-
-  /**
-   * Post a starting check
-   */
-  async postStartingCheck(
-    name: string,
-    summary: string,
-    details: string,
-  ): Promise<void> {
-    /* eslint-disable */
-    await createStatus(
-      this.context,
-      undefined,
-      "queued",
-      name,
-      summary,
-      details,
-      this.sha
-    );
-    /* eslint-enable */
-  }
-
-  async postUpdatingCheck(
-    name: string,
-    summary: string,
-    details: string,
-  ): Promise<void> {
-    /* eslint-disable */
-    await createStatus(
-      this.context,
-      undefined,
-      "in_progress",
-      name,
-      summary,
-      details,
-      this.sha
-    );
-    /* eslint-enable */
-  }
-
-  async postPassingCheck(
-    name: string,
-    summary: string,
-    details: string,
-  ): Promise<void> {
-    /* eslint-disable */
-    await createStatus(
-      this.context,
-      "success",
-      "completed",
-      name,
-      summary,
-      details,
-      this.sha
-    );
-    /* eslint-enable */
-  }
-
-  async postFailingCheck(
-    name: string,
-    summary: string,
-    details: string,
-  ): Promise<void> {
-    /* eslint-disable */
-    await createStatus(
-      this.context,
-      "failure",
-      "completed",
-      name,
-      summary,
-      details,
-      this.sha
-    );
-    /* eslint-enable */
   }
 }
 

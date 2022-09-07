@@ -40,9 +40,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchConfig = exports.CheckGroup = void 0;
-var config_1 = require("../config");
 var utils_1 = require("../utils");
-var create_status_1 = require("./create_status");
 var config_getter_1 = require("./config_getter");
 Object.defineProperty(exports, "fetchConfig", { enumerable: true, get: function () { return config_getter_1.fetchConfig; } });
 var utils_2 = require("../utils");
@@ -59,63 +57,43 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, subprojs, postedChecks, conclusion, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 11, , 13]);
-                        return [4 /*yield*/, this.files()];
+            var filenames, subprojs, tries, conclusion, loop;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.files()];
                     case 1:
-                        filenames = _b.sent();
+                        filenames = _a.sent();
                         this.context.log.info("Files are: ".concat(JSON.stringify(filenames)));
                         subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
                         this.context.log.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
-                        return [4 /*yield*/, this.getPostedChecks(this.sha)];
-                    case 2:
-                        postedChecks = _b.sent();
-                        this.context.log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
-                        conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
-                        if (!!(config_1.defaultCheckId in postedChecks)) return [3 /*break*/, 4];
-                        this.context.log.info("First time run. Post starting check.");
-                        return [4 /*yield*/, this.postStartingCheck(this.config.customServiceName, config_1.startCheckSummary, config_1.startCheckDetails)];
-                    case 3:
-                        _b.sent();
-                        _b.label = 4;
-                    case 4:
-                        if (!(conclusion === "all_passing")) return [3 /*break*/, 6];
-                        this.context.log.info("All expected checks passed.");
-                        return [4 /*yield*/, this.postPassingCheck(this.config.customServiceName, (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
-                    case 5:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 6:
-                        if (!(conclusion === "has_failure")) return [3 /*break*/, 8];
-                        this.context.log.info("Some of the expected checks failed.");
-                        return [4 /*yield*/, this.postFailingCheck(this.config.customServiceName, (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
-                    case 7:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 8:
-                        this.context.log.info("Expected checks are still pending.");
-                        return [4 /*yield*/, this.postUpdatingCheck(this.config.customServiceName, (0, utils_1.generateProgressSummary)(subprojs, postedChecks), (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config))];
-                    case 9:
-                        _b.sent();
-                        _b.label = 10;
-                    case 10: return [3 /*break*/, 13];
-                    case 11:
-                        _a = _b.sent();
-                        this.context.log.info("The app crashed.");
-                        // TODO(@tianhaoz95): Add a better error message. Consider using
-                        // markdown import suggested by
-                        // https://stackoverflow.com/questions/44678315/how-to-import-markdown-md-file-in-typescript
-                        return [4 /*yield*/, this.postFailingCheck(this.config.customServiceName, config_1.errorCheckSummary, config_1.errorCheckDetails)];
-                    case 12:
-                        // TODO(@tianhaoz95): Add a better error message. Consider using
-                        // markdown import suggested by
-                        // https://stackoverflow.com/questions/44678315/how-to-import-markdown-md-file-in-typescript
-                        _b.sent();
-                        return [3 /*break*/, 13];
-                    case 13: return [2 /*return*/];
+                        tries = 0;
+                        conclusion = undefined;
+                        loop = setInterval(function () {
+                            return __awaiter(this, void 0, void 0, function () {
+                                var postedChecks, summary, details;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (conclusion === "success") {
+                                                clearInterval(loop);
+                                            }
+                                            tries += 1;
+                                            return [4 /*yield*/, this.getPostedChecks(this.sha)];
+                                        case 1:
+                                            postedChecks = _a.sent();
+                                            this.context.log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
+                                            conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
+                                            summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
+                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config);
+                                            this.context.log.info("".concat(this.config.customServiceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            });
+                        }, 2 * 60 * 1000 // 2 minutes in ms
+                        );
+                        this.context.log.info("Required checks were successful!");
+                        return [2 /*return*/];
                 }
             });
         });
@@ -173,69 +151,6 @@ var CheckGroup = /** @class */ (function () {
                             filenames.push(pullRequestFile.filename);
                         });
                         return [2 /*return*/, filenames];
-                }
-            });
-        });
-    };
-    /**
-     * Post a starting check
-     */
-    CheckGroup.prototype.postStartingCheck = function (name, summary, details) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: 
-                    /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "queued", name, summary, details, this.sha)];
-                    case 1:
-                        /* eslint-disable */
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CheckGroup.prototype.postUpdatingCheck = function (name, summary, details) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: 
-                    /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, undefined, "in_progress", name, summary, details, this.sha)];
-                    case 1:
-                        /* eslint-disable */
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CheckGroup.prototype.postPassingCheck = function (name, summary, details) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: 
-                    /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "success", "completed", name, summary, details, this.sha)];
-                    case 1:
-                        /* eslint-disable */
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CheckGroup.prototype.postFailingCheck = function (name, summary, details) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: 
-                    /* eslint-disable */
-                    return [4 /*yield*/, (0, create_status_1.createStatus)(this.context, "failure", "completed", name, summary, details, this.sha)];
-                    case 1:
-                        /* eslint-disable */
-                        _a.sent();
-                        return [2 /*return*/];
                 }
             });
         });
