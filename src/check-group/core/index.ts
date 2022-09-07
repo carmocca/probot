@@ -36,70 +36,39 @@ export class CheckGroup {
 
   async run(): Promise<void> {
     const filenames = await this.files();
-    const config = this.config
-
     core.info(`Files are: ${JSON.stringify(filenames)}`);
-    const subprojs = matchFilenamesToSubprojects(filenames, config.subProjects);
+
+    const subprojs = matchFilenamesToSubprojects(filenames, this.config.subProjects);
     core.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
 
+    const interval = parseInt(core.getInput('interval'))
+    core.info(`Check interval: ${interval}`);
+    
     let tries = 0;
     let conclusion = undefined;
-    const interval = parseInt(core.getInput('interval'))
-    // cannot access `this` inside
-    const getPostedChecks = this.getPostedChecks
-    const serviceName = this.config.customServiceName
-
     // IMPORTANT: a timeout should be set in the action workflow
     const loop = setInterval(
-      async function() {
+      async function(that) {
         try {
           if (conclusion === "success") {
             core.info("Required checks were successful!")
             clearInterval(loop)
           }
           tries += 1;
-          const postedChecks = await getPostedChecks();
+          const postedChecks = await getPostedChecks(that.context, that.sha);
           core.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
           conclusion = satisfyExpectedChecks(subprojs, postedChecks);
           const summary = generateProgressSummary(subprojs, postedChecks)
-          const details = generateProgressDetails(subprojs, postedChecks, config)
+          const details = generateProgressDetails(subprojs, postedChecks, that.config)
           core.info(
-            `${serviceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
+            `${that.config.customServiceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
           )
         } catch (error) {
           core.setFailed(error);
           clearInterval(loop)
         }
-      }, interval * 1000
+      }, interval * 1000, this
     )
-  }
-
-  /**
-   * Fetches a list of already finished
-   * checks.
-   */
-  async getPostedChecks(): Promise<Record<string, string>> {
-    const checkRuns = await this.context.octokit.paginate(
-      this.context.octokit.checks.listForRef,
-      this.context.repo({
-        ref: this.sha,
-      }),
-      (response) => response.data,
-    );
-    const checkNames: Record<string, string> = {};
-    checkRuns.forEach(
-      (
-        /* eslint-disable */
-        checkRun: any,
-        /* eslint-enable */
-      ) => {
-        const conclusion = checkRun.conclusion
-          ? checkRun.conclusion
-          : "pending";
-        checkNames[checkRun.name] = conclusion;
-      },
-    );
-    return checkNames;
   }
 
   /**
@@ -129,3 +98,24 @@ export class CheckGroup {
 }
 
 export {fetchConfig};
+
+
+/**
+ * Fetches a list of already finished
+ * checks.
+ */
+const getPostedChecks = async (context: Context, sha: string): Promise<Record<string, string>> => {
+  const checkRuns = await context.octokit.paginate(
+    context.octokit.checks.listForRef,
+    context.repo({ref: sha}),
+    (response) => response.data,
+  );
+  const checkNames: Record<string, string> = {};
+  checkRuns.forEach(
+    (checkRun: any) => {
+      const conclusion = checkRun.conclusion ? checkRun.conclusion : "pending";
+      checkNames[checkRun.name] = conclusion;
+    },
+  );
+  return checkNames;
+}

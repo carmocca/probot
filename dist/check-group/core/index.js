@@ -81,22 +81,20 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, config, subprojs, tries, conclusion, interval, getPostedChecks, serviceName, loop;
+            var filenames, subprojs, interval, tries, conclusion, loop;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.files()];
                     case 1:
                         filenames = _a.sent();
-                        config = this.config;
                         core.info("Files are: ".concat(JSON.stringify(filenames)));
-                        subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, config.subProjects);
+                        subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
                         core.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
+                        interval = parseInt(core.getInput('interval'));
+                        core.info("Check interval: ".concat(interval));
                         tries = 0;
                         conclusion = undefined;
-                        interval = parseInt(core.getInput('interval'));
-                        getPostedChecks = this.getPostedChecks;
-                        serviceName = this.config.customServiceName;
-                        loop = setInterval(function () {
+                        loop = setInterval(function (that) {
                             return __awaiter(this, void 0, void 0, function () {
                                 var postedChecks, summary, details, error_1;
                                 return __generator(this, function (_a) {
@@ -108,14 +106,14 @@ var CheckGroup = /** @class */ (function () {
                                                 clearInterval(loop);
                                             }
                                             tries += 1;
-                                            return [4 /*yield*/, getPostedChecks()];
+                                            return [4 /*yield*/, getPostedChecks(that.context, that.sha)];
                                         case 1:
                                             postedChecks = _a.sent();
                                             core.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
-                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, config);
-                                            core.info("".concat(serviceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, that.config);
+                                            core.info("".concat(that.config.customServiceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
                                             return [3 /*break*/, 3];
                                         case 2:
                                             error_1 = _a.sent();
@@ -126,36 +124,8 @@ var CheckGroup = /** @class */ (function () {
                                     }
                                 });
                             });
-                        }, interval * 1000);
+                        }, interval * 1000, this);
                         return [2 /*return*/];
-                }
-            });
-        });
-    };
-    /**
-     * Fetches a list of already finished
-     * checks.
-     */
-    CheckGroup.prototype.getPostedChecks = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var checkRuns, checkNames;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.checks.listForRef, this.context.repo({
-                            ref: this.sha,
-                        }), function (response) { return response.data; })];
-                    case 1:
-                        checkRuns = _a.sent();
-                        checkNames = {};
-                        checkRuns.forEach(function (
-                        /* eslint-disable */
-                        checkRun) {
-                            var conclusion = checkRun.conclusion
-                                ? checkRun.conclusion
-                                : "pending";
-                            checkNames[checkRun.name] = conclusion;
-                        });
-                        return [2 /*return*/, checkNames];
                 }
             });
         });
@@ -188,3 +158,23 @@ var CheckGroup = /** @class */ (function () {
     return CheckGroup;
 }());
 exports.CheckGroup = CheckGroup;
+/**
+ * Fetches a list of already finished
+ * checks.
+ */
+var getPostedChecks = function (context, sha) { return __awaiter(void 0, void 0, void 0, function () {
+    var checkRuns, checkNames;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, context.octokit.paginate(context.octokit.checks.listForRef, context.repo({ ref: sha }), function (response) { return response.data; })];
+            case 1:
+                checkRuns = _a.sent();
+                checkNames = {};
+                checkRuns.forEach(function (checkRun) {
+                    var conclusion = checkRun.conclusion ? checkRun.conclusion : "pending";
+                    checkNames[checkRun.name] = conclusion;
+                });
+                return [2 /*return*/, checkNames];
+        }
+    });
+}); };
