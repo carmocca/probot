@@ -81,7 +81,7 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, subprojs, interval, tries, conclusion, loop;
+            var filenames, subprojs, expectedChecks, interval, tries, conclusion, loop;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.files()];
@@ -89,7 +89,9 @@ var CheckGroup = /** @class */ (function () {
                         filenames = _a.sent();
                         core.info("Files are: ".concat(JSON.stringify(filenames)));
                         subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
-                        core.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
+                        core.debug("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
+                        expectedChecks = collectExpectedChecks(subprojs);
+                        core.info("Expected checks are: ".concat(JSON.stringify(expectedChecks)));
                         interval = parseInt(core.getInput('interval'));
                         core.info("Check interval: ".concat(interval));
                         tries = 0;
@@ -175,3 +177,18 @@ var getPostedChecks = function (context, sha) { return __awaiter(void 0, void 0,
         }
     });
 }); };
+var collectExpectedChecks = function (configs) {
+    // checks: subprojects[]
+    var requiredChecks = {};
+    configs.forEach(function (config) {
+        config.checks.forEach(function (check) {
+            if (check.id in requiredChecks) {
+                requiredChecks[check.id].push(config.id);
+            }
+            else {
+                requiredChecks[check.id] = [config.id];
+            }
+        });
+    });
+    return requiredChecks;
+};

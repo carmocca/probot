@@ -12,6 +12,7 @@ import type { Context } from "probot";
 import { fetchConfig } from "./config_getter";
 import { matchFilenamesToSubprojects } from "../utils";
 import { satisfyExpectedChecks } from "../utils";
+import { SubProjConfig } from "../types";
 
 /**
  * The orchestration class.
@@ -39,7 +40,10 @@ export class CheckGroup {
     core.info(`Files are: ${JSON.stringify(filenames)}`);
 
     const subprojs = matchFilenamesToSubprojects(filenames, this.config.subProjects);
-    core.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
+    core.debug(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
+
+    const expectedChecks = collectExpectedChecks(subprojs);
+    core.info(`Expected checks are: ${JSON.stringify(expectedChecks)}`);
 
     const interval = parseInt(core.getInput('interval'))
     core.info(`Check interval: ${interval}`);
@@ -94,7 +98,6 @@ export class CheckGroup {
 
 export {fetchConfig};
 
-
 /**
  * Fetches a list of already finished
  * checks.
@@ -115,3 +118,18 @@ const getPostedChecks = async (context: Context, sha: string): Promise<Record<st
   );
   return checkNames;
 }
+
+const collectExpectedChecks = (configs: SubProjConfig[]): Record<string, string[]> => {
+  // checks: subprojects[]
+  const requiredChecks: Record<string, string[]> = {};
+  configs.forEach((config) => {
+    config.checks.forEach((check) => {
+      if (check.id in requiredChecks) {
+        requiredChecks[check.id].push(config.id)
+      } else {
+        requiredChecks[check.id] = [config.id]
+      }
+    });
+  });
+  return requiredChecks;
+};
