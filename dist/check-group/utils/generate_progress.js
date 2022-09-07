@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateProgressDetails = exports.statusToMark = exports.generateProgressSummary = exports.generateProgressReport = void 0;
-/* eslint-enable @typescript-eslint/no-unused-vars */
-var config_1 = require("../config");
 var generateProgressReport = function (subprojects, checksStatusLookup) {
     var report = {
         completed: [],
@@ -49,20 +47,14 @@ var generateProgressSummary = function (subprojects, checksStatusLookup) {
     return message;
 };
 exports.generateProgressSummary = generateProgressSummary;
-var statusToMark = function (check, checksStatusLookup, config) {
-    // TODO(@tianhaoz95): come up with better way to deal with dev and prod discrepancies.
-    if (check === config_1.defaultCheckId || check == config.customServiceName) {
-        return "Self";
-    }
+var statusToMark = function (check, checksStatusLookup) {
     if (check in checksStatusLookup) {
-        /* eslint-disable security/detect-object-injection */
         if (checksStatusLookup[check] == "success") {
             return "✅";
         }
         if (checksStatusLookup[check] == "failure") {
             return "❌";
         }
-        /* eslint-enable security/detect-object-injection */
     }
     else {
         return "⌛";
@@ -77,7 +69,7 @@ exports.statusToMark = statusToMark;
  * @param subprojects The subprojects that the PR matches.
  * @param checksStatusLookup The lookup table for checks status.
  */
-var generateProgressDetails = function (subprojects, checksStatusLookup, config) {
+var generateProgressDetails = function (subprojects, checksStatusLookup) {
     var progress = "";
     // these are the required subprojects
     subprojects.forEach(function (subproject) {
@@ -85,8 +77,9 @@ var generateProgressDetails = function (subprojects, checksStatusLookup, config)
         // for padding
         var longestLength = Math.max.apply(Math, (subproject.checks.map(function (check) { return check.id.length; })));
         subproject.checks.forEach(function (check) {
-            var mark = (0, exports.statusToMark)(check.id, checksStatusLookup, config);
-            var status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : '';
+            var mark = (0, exports.statusToMark)(check.id, checksStatusLookup);
+            var status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : 'no_status';
+            status = status || 'undefined';
             progress += "".concat(check.id.padEnd(longestLength, ' '), " | ").concat(mark, " | ").concat(status.padEnd(12, ' '), "\n");
         });
         progress += "\n\n";
@@ -98,8 +91,9 @@ var generateProgressDetails = function (subprojects, checksStatusLookup, config)
         longestLength = Math.max(longestLength, availableCheck.length);
     }
     for (var availableCheck in checksStatusLookup) {
-        var mark = (0, exports.statusToMark)(availableCheck, checksStatusLookup, config);
-        var status_2 = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : '';
+        var mark = (0, exports.statusToMark)(availableCheck, checksStatusLookup);
+        var status_2 = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : 'no_status';
+        status_2 = status_2 || 'undefined';
         progress += "".concat(availableCheck.padEnd(longestLength, ' '), " | ").concat(mark, " | ").concat(status_2.padEnd(12, ' '), "\n");
     }
     progress += "\n";

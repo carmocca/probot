@@ -116,7 +116,7 @@ var CheckGroup = /** @class */ (function () {
                                             core.debug("postedChecks: ".concat(JSON.stringify(postedChecks)));
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
-                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, that.config);
+                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks);
                                             core.info("".concat(that.config.customServiceName, " conclusion: '").concat(conclusion, "' after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
                                             return [3 /*break*/, 3];
                                         case 2:

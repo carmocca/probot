@@ -56,21 +56,14 @@ export const generateProgressSummary = (
 export const statusToMark = (
   check: string,
   checksStatusLookup: Record<string, string>,
-  config: CheckGroupConfig,
 ): string => {
-  // TODO(@tianhaoz95): come up with better way to deal with dev and prod discrepancies.
-  if (check === defaultCheckId || check == config.customServiceName) {
-    return "Self";
-  }
   if (check in checksStatusLookup) {
-    /* eslint-disable security/detect-object-injection */
     if (checksStatusLookup[check] == "success") {
       return "✅";
     }
     if (checksStatusLookup[check] == "failure") {
       return "❌";
     }
-    /* eslint-enable security/detect-object-injection */
   } else {
     return "⌛";
   }
@@ -87,7 +80,6 @@ export const statusToMark = (
 export const generateProgressDetails = (
   subprojects: SubProjConfig[],
   checksStatusLookup: Record<string, string>,
-  config: CheckGroupConfig,
 ): string => {
   let progress = "";
 
@@ -97,8 +89,9 @@ export const generateProgressDetails = (
     // for padding
     const longestLength = Math.max(...(subproject.checks.map(check => check.id.length)));
     subproject.checks.forEach((check) => {
-      const mark = statusToMark(check.id, checksStatusLookup, config);
-      const status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : ''
+      const mark = statusToMark(check.id, checksStatusLookup);
+      let status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : 'no_status'
+      status = status || 'undefined';
       progress += `${check.id.padEnd(longestLength, ' ')} | ${mark} | ${status.padEnd(12, ' ')}\n`;
     });
     progress += "\n\n";
@@ -111,8 +104,9 @@ export const generateProgressDetails = (
     longestLength = Math.max(longestLength, availableCheck.length);
   }
   for (const availableCheck in checksStatusLookup) {
-    const mark = statusToMark(availableCheck, checksStatusLookup, config);
-    const status = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : ''
+    const mark = statusToMark(availableCheck, checksStatusLookup);
+    let status = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : 'no_status'
+    status = status || 'undefined';
     progress += `${availableCheck.padEnd(longestLength, ' ')} | ${mark} | ${status.padEnd(12, ' ')}\n`;
   }
   progress += "\n";

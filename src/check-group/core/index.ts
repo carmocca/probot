@@ -67,7 +67,7 @@ export class CheckGroup {
 
           conclusion = satisfyExpectedChecks(subprojs, postedChecks);
           const summary = generateProgressSummary(subprojs, postedChecks)
-          const details = generateProgressDetails(subprojs, postedChecks, that.config)
+          const details = generateProgressDetails(subprojs, postedChecks)
           core.info(
             `${that.config.customServiceName} conclusion: '${conclusion}' after ${tries} tries:\n${summary}\n${details}`
           )
