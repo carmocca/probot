@@ -55,8 +55,10 @@ export class CheckGroup {
             clearInterval(loop)
           }
           tries += 1;
+
           const postedChecks = await getPostedChecks(that.context, that.sha);
           core.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
+
           conclusion = satisfyExpectedChecks(subprojs, postedChecks);
           const summary = generateProgressSummary(subprojs, postedChecks)
           const details = generateProgressDetails(subprojs, postedChecks, that.config)
@@ -78,18 +80,11 @@ export class CheckGroup {
   async files(): Promise<string[]> {
     const pullRequestFiles = await this.context.octokit.paginate(
       this.context.octokit.pulls.listFiles,
-      this.context.repo({
-        "pull_number": this.pullRequestNumber,
-      }),
+      this.context.repo({"pull_number": this.pullRequestNumber}),
       (response) => response.data,
     );
     const filenames: string[] = [];
-    pullRequestFiles.forEach(
-      (
-        /* eslint-disable */
-        pullRequestFile: any,
-        /* eslint-enable */
-      ) => {
+    pullRequestFiles.forEach((pullRequestFile: any) => {
         filenames.push(pullRequestFile.filename);
       },
     );
@@ -110,6 +105,7 @@ const getPostedChecks = async (context: Context, sha: string): Promise<Record<st
     context.repo({ref: sha}),
     (response) => response.data,
   );
+  core.debug(`checkRuns: ${JSON.stringify(checkRuns)}`)
   const checkNames: Record<string, string> = {};
   checkRuns.forEach(
     (checkRun: any) => {
