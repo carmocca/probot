@@ -79,33 +79,27 @@ exports.statusToMark = statusToMark;
  */
 var generateProgressDetails = function (subprojects, checksStatusLookup, config) {
     var progress = "";
+    // these are the required subprojects
     subprojects.forEach(function (subproject) {
         progress += "### Summary for sub-project ".concat(subproject.id, "\n");
-        progress += "| Project Name | Current Status |\n";
-        progress += "| ------------ | -------------- |\n";
+        // for padding
+        var longestLength = Math.max.apply(Math, (subproject.checks.map(function (check) { return check.id.length; })));
         subproject.checks.forEach(function (check) {
             var mark = (0, exports.statusToMark)(check.id, checksStatusLookup, config);
-            progress += "| ".concat(check.id, " | ").concat(mark, " |\n");
+            var currentLength = check.id.length;
+            progress += "| ".concat(check.id).concat(' '.repeat(longestLength - currentLength), " | ").concat(mark, " |\n");
         });
         progress += "\n";
     });
-    progress += "## Currently received checks\n";
-    progress += "| Project Name | Current Status |\n";
-    progress += "| ------------ | -------------- |\n";
-    /* eslint-disable security/detect-object-injection */
-    for (var availableCheck in checksStatusLookup) {
-        progress += "| ".concat(availableCheck, " | ").concat((0, exports.statusToMark)(availableCheck, checksStatusLookup, config), " |\n");
-    }
     progress += "\n";
-    var minimumWarningCnt = 0;
-    /* eslint-enable security/detect-object-injection */
-    if (config.debugInfo.length > minimumWarningCnt) {
-        progress += "## Found following issues\n\n";
-        // TODO(@tianhaoz95): add the simplified debug info.
-        for (var _i = 0, _a = config.debugInfo; _i < _a.length; _i++) {
-            var debugInfo = _a[_i];
-            progress += "* ".concat(debugInfo.configErrorMsg, "\n");
-        }
+    progress += "## Currently received checks\n";
+    var longestLength = 1;
+    for (var availableCheck in checksStatusLookup) {
+        longestLength = Math.max(longestLength, availableCheck.length);
+    }
+    for (var availableCheck in checksStatusLookup) {
+        var currentLength = availableCheck.length;
+        progress += "| ".concat(availableCheck).concat(' '.repeat(longestLength - currentLength), " | ").concat((0, exports.statusToMark)(availableCheck, checksStatusLookup, config), " |\n");
     }
     return progress;
 };

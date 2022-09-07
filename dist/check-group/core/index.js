@@ -90,8 +90,10 @@ var CheckGroup = /** @class */ (function () {
                         core.info("Files are: ".concat(JSON.stringify(filenames)));
                         subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
                         core.debug("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
-                        expectedChecks = collectExpectedChecks(subprojs);
-                        core.info("Expected checks are: ".concat(JSON.stringify(expectedChecks)));
+                        if (core.isDebug()) {
+                            expectedChecks = collectExpectedChecks(subprojs);
+                            core.debug("Expected checks are: ".concat(JSON.stringify(expectedChecks)));
+                        }
                         interval = parseInt(core.getInput('interval'));
                         core.info("Check interval: ".concat(interval));
                         tries = 0;
@@ -111,7 +113,7 @@ var CheckGroup = /** @class */ (function () {
                                             return [4 /*yield*/, getPostedChecks(that.context, that.sha)];
                                         case 1:
                                             postedChecks = _a.sent();
-                                            core.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
+                                            core.debug("postedChecks: ".concat(JSON.stringify(postedChecks)));
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
                                             details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, that.config);

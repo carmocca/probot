@@ -90,36 +90,34 @@ export const generateProgressDetails = (
   config: CheckGroupConfig,
 ): string => {
   let progress = "";
+
+  // these are the required subprojects
   subprojects.forEach((subproject) => {
     progress += `### Summary for sub-project ${subproject.id}\n`;
-    progress += "| Project Name | Current Status |\n";
-    progress += "| ------------ | -------------- |\n";
+    // for padding
+    const longestLength = Math.max(...(subproject.checks.map(check => check.id.length)));
     subproject.checks.forEach((check) => {
       const mark = statusToMark(check.id, checksStatusLookup, config);
-      progress += `| ${check.id} | ${mark} |\n`;
+      const currentLength = check.id.length
+      progress += `| ${check.id}${' '.repeat(longestLength - currentLength)} | ${mark} |\n`;
     });
     progress += "\n";
   });
+  progress += "\n";
+
   progress += "## Currently received checks\n";
-  progress += "| Project Name | Current Status |\n";
-  progress += "| ------------ | -------------- |\n";
-  /* eslint-disable security/detect-object-injection */
+  let longestLength = 1;
   for (const availableCheck in checksStatusLookup) {
-    progress += `| ${availableCheck} | ${statusToMark(
+    longestLength = Math.max(longestLength, availableCheck.length);
+  }
+  for (const availableCheck in checksStatusLookup) {
+    const currentLength = availableCheck.length
+    progress += `| ${availableCheck}${' '.repeat(longestLength - currentLength)} | ${statusToMark(
       availableCheck,
       checksStatusLookup,
       config,
     )} |\n`;
   }
-  progress += "\n";
-  const minimumWarningCnt = 0;
-  /* eslint-enable security/detect-object-injection */
-  if (config.debugInfo.length > minimumWarningCnt) {
-    progress += "## Found following issues\n\n";
-    // TODO(@tianhaoz95): add the simplified debug info.
-    for (const debugInfo of config.debugInfo) {
-      progress += `* ${debugInfo.configErrorMsg}\n`;
-    }
-  }
+
   return progress;
 };

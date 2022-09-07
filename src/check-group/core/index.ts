@@ -42,8 +42,10 @@ export class CheckGroup {
     const subprojs = matchFilenamesToSubprojects(filenames, this.config.subProjects);
     core.debug(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
 
-    const expectedChecks = collectExpectedChecks(subprojs);
-    core.info(`Expected checks are: ${JSON.stringify(expectedChecks)}`);
+    if (core.isDebug()) {
+      const expectedChecks = collectExpectedChecks(subprojs);
+      core.debug(`Expected checks are: ${JSON.stringify(expectedChecks)}`);
+    }
 
     const interval = parseInt(core.getInput('interval'))
     core.info(`Check interval: ${interval}`);
@@ -61,7 +63,7 @@ export class CheckGroup {
           tries += 1;
 
           const postedChecks = await getPostedChecks(that.context, that.sha);
-          core.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
+          core.debug(`postedChecks: ${JSON.stringify(postedChecks)}`);
 
           conclusion = satisfyExpectedChecks(subprojs, postedChecks);
           const summary = generateProgressSummary(subprojs, postedChecks)
