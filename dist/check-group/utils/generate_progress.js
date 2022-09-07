@@ -81,15 +81,15 @@ var generateProgressDetails = function (subprojects, checksStatusLookup, config)
     var progress = "";
     // these are the required subprojects
     subprojects.forEach(function (subproject) {
-        progress += "### Summary for sub-project ".concat(subproject.id, "\n");
+        progress += "Summary for sub-project ".concat(subproject.id, "\n");
         // for padding
         var longestLength = Math.max.apply(Math, (subproject.checks.map(function (check) { return check.id.length; })));
         subproject.checks.forEach(function (check) {
             var mark = (0, exports.statusToMark)(check.id, checksStatusLookup, config);
-            var currentLength = check.id.length;
-            progress += "| ".concat(check.id).concat(' '.repeat(longestLength - currentLength), " | ").concat(mark, " |\n");
+            var status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : '';
+            progress += "".concat(check.id.padEnd(longestLength, ' '), " | ").concat(mark, " | ").concat(status.padEnd(12, ' '), "\n");
         });
-        progress += "\n";
+        progress += "\n\n";
     });
     progress += "\n";
     progress += "## Currently received checks\n";
@@ -98,9 +98,11 @@ var generateProgressDetails = function (subprojects, checksStatusLookup, config)
         longestLength = Math.max(longestLength, availableCheck.length);
     }
     for (var availableCheck in checksStatusLookup) {
-        var currentLength = availableCheck.length;
-        progress += "| ".concat(availableCheck).concat(' '.repeat(longestLength - currentLength), " | ").concat((0, exports.statusToMark)(availableCheck, checksStatusLookup, config), " |\n");
+        var mark = (0, exports.statusToMark)(availableCheck, checksStatusLookup, config);
+        var status_2 = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : '';
+        progress += "".concat(availableCheck.padEnd(longestLength, ' '), " | ").concat(mark, " | ").concat(status_2.padEnd(12, ' '), "\n");
     }
+    progress += "\n";
     return progress;
 };
 exports.generateProgressDetails = generateProgressDetails;

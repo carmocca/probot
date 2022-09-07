@@ -93,15 +93,15 @@ export const generateProgressDetails = (
 
   // these are the required subprojects
   subprojects.forEach((subproject) => {
-    progress += `### Summary for sub-project ${subproject.id}\n`;
+    progress += `Summary for sub-project ${subproject.id}\n`;
     // for padding
     const longestLength = Math.max(...(subproject.checks.map(check => check.id.length)));
     subproject.checks.forEach((check) => {
       const mark = statusToMark(check.id, checksStatusLookup, config);
-      const currentLength = check.id.length
-      progress += `| ${check.id}${' '.repeat(longestLength - currentLength)} | ${mark} |\n`;
+      const status = (check.id in checksStatusLookup) ? checksStatusLookup[check.id] : ''
+      progress += `${check.id.padEnd(longestLength, ' ')} | ${mark} | ${status.padEnd(12, ' ')}\n`;
     });
-    progress += "\n";
+    progress += "\n\n";
   });
   progress += "\n";
 
@@ -111,13 +111,10 @@ export const generateProgressDetails = (
     longestLength = Math.max(longestLength, availableCheck.length);
   }
   for (const availableCheck in checksStatusLookup) {
-    const currentLength = availableCheck.length
-    progress += `| ${availableCheck}${' '.repeat(longestLength - currentLength)} | ${statusToMark(
-      availableCheck,
-      checksStatusLookup,
-      config,
-    )} |\n`;
+    const mark = statusToMark(availableCheck, checksStatusLookup, config);
+    const status = (availableCheck in checksStatusLookup) ? checksStatusLookup[availableCheck] : ''
+    progress += `${availableCheck.padEnd(longestLength, ' ')} | ${mark} | ${status.padEnd(12, ' ')}\n`;
   }
-
+  progress += "\n";
   return progress;
 };
