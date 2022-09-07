@@ -38,18 +38,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("./core");
 var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0, function () {
-    var sha, name, payload, pullRequestNumber, config, core;
+    var name, payload, pullRequestNumber, sha, config, core;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                sha = process.env['GITHUB_SHA'];
                 name = context.name;
                 if (name !== 'pull_request') {
                     throw new Error("name ".concat(name, " not implemented"));
                 }
                 payload = context.payload;
                 pullRequestNumber = payload.pull_request.number;
-                context.log.info("".concat(name, " event detected for PR ").concat(pullRequestNumber, ", SHA ").concat(sha));
+                sha = payload.pull_request.head.sha;
+                context.log.info("".concat(name, " event detected for PR: ").concat(pullRequestNumber, ", SHA: ").concat(sha));
+                context.log.debug("Environment SHA: ".concat(process.env['GITHUB_SHA']));
                 return [4 /*yield*/, (0, core_1.fetchConfig)(context)];
             case 1:
                 config = _a.sent();

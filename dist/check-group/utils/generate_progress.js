@@ -80,7 +80,7 @@ exports.statusToMark = statusToMark;
 var generateProgressDetails = function (subprojects, checksStatusLookup, config) {
     var progress = "";
     subprojects.forEach(function (subproject) {
-        progress += "### Summary for sub-project ".concat(subproject.id);
+        progress += "### Summary for sub-project ".concat(subproject.id, "\n");
         progress += "| Project Name | Current Status |\n";
         progress += "| ------------ | -------------- |\n";
         subproject.checks.forEach(function (check) {
