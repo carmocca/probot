@@ -19,7 +19,7 @@ CC people when labels are added to an issue.
 
 ## check-group
 
-See https://github.com/tianhaoz95/check-group/blob/master/README.md
+Adaptation of https://github.com/tianhaoz95/check-group/blob/master/README.md that works as a GitHub action, is only triggered with the `pull_request` event type, and checks the job statuses with an interval.
 
 ## Setup
 
