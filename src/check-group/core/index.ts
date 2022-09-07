@@ -63,7 +63,7 @@ export class CheckGroup {
           const summary = generateProgressSummary(subprojs, postedChecks)
           const details = generateProgressDetails(subprojs, postedChecks, that.config)
           core.info(
-            `${that.config.customServiceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
+            `${that.config.customServiceName} conclusion: '${conclusion}' after ${tries} tries:\n${summary}\n${details}`
           )
         } catch (error) {
           core.setFailed(error);

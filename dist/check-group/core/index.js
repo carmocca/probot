@@ -113,7 +113,7 @@ var CheckGroup = /** @class */ (function () {
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
                                             details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, that.config);
-                                            core.info("".concat(that.config.customServiceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            core.info("".concat(that.config.customServiceName, " conclusion: '").concat(conclusion, "' after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
                                             return [3 /*break*/, 3];
                                         case 2:
                                             error_1 = _a.sent();
@@ -139,15 +139,11 @@ var CheckGroup = /** @class */ (function () {
             var pullRequestFiles, filenames;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.pulls.listFiles, this.context.repo({
-                            "pull_number": this.pullRequestNumber,
-                        }), function (response) { return response.data; })];
+                    case 0: return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.pulls.listFiles, this.context.repo({ "pull_number": this.pullRequestNumber }), function (response) { return response.data; })];
                     case 1:
                         pullRequestFiles = _a.sent();
                         filenames = [];
-                        pullRequestFiles.forEach(function (
-                        /* eslint-disable */
-                        pullRequestFile) {
+                        pullRequestFiles.forEach(function (pullRequestFile) {
                             filenames.push(pullRequestFile.filename);
                         });
                         return [2 /*return*/, filenames];
@@ -169,6 +165,7 @@ var getPostedChecks = function (context, sha) { return __awaiter(void 0, void 0,
             case 0: return [4 /*yield*/, context.octokit.paginate(context.octokit.checks.listForRef, context.repo({ ref: sha }), function (response) { return response.data; })];
             case 1:
                 checkRuns = _a.sent();
+                core.debug("checkRuns: ".concat(JSON.stringify(checkRuns)));
                 checkNames = {};
                 checkRuns.forEach(function (checkRun) {
                     var conclusion = checkRun.conclusion ? checkRun.conclusion : "pending";

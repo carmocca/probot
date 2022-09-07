@@ -60,21 +60,21 @@ export const statusToMark = (
 ): string => {
   // TODO(@tianhaoz95): come up with better way to deal with dev and prod discrepancies.
   if (check === defaultCheckId || check == config.customServiceName) {
-    return "Yep, that's me :cat:";
+    return "Self";
   }
   if (check in checksStatusLookup) {
     /* eslint-disable security/detect-object-injection */
     if (checksStatusLookup[check] == "success") {
-      return ":heavy_check_mark:";
+      return "✅";
     }
     if (checksStatusLookup[check] == "failure") {
-      return ":x:";
+      return "❌";
     }
     /* eslint-enable security/detect-object-injection */
   } else {
-    return ":hourglass:";
+    return "⌛";
   }
-  return ":interrobang:";
+  return "❓";
 };
 
 /**
@@ -90,9 +90,8 @@ export const generateProgressDetails = (
   config: CheckGroupConfig,
 ): string => {
   let progress = "";
-  progress += "## Progress by sub-projects\n\n";
   subprojects.forEach((subproject) => {
-    progress += `### Summary for sub-project ${subproject.id}\n\n`;
+    progress += `### Summary for sub-project ${subproject.id}`;
     progress += "| Project Name | Current Status |\n";
     progress += "| ------------ | -------------- |\n";
     subproject.checks.forEach((check) => {
@@ -101,7 +100,7 @@ export const generateProgressDetails = (
     });
     progress += "\n";
   });
-  progress += "## Currently received checks\n\n";
+  progress += "## Currently received checks\n";
   progress += "| Project Name | Current Status |\n";
   progress += "| ------------ | -------------- |\n";
   /* eslint-disable security/detect-object-injection */

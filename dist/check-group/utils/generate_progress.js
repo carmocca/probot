@@ -52,22 +52,22 @@ exports.generateProgressSummary = generateProgressSummary;
 var statusToMark = function (check, checksStatusLookup, config) {
     // TODO(@tianhaoz95): come up with better way to deal with dev and prod discrepancies.
     if (check === config_1.defaultCheckId || check == config.customServiceName) {
-        return "Yep, that's me :cat:";
+        return "Self";
     }
     if (check in checksStatusLookup) {
         /* eslint-disable security/detect-object-injection */
         if (checksStatusLookup[check] == "success") {
-            return ":heavy_check_mark:";
+            return "✅";
         }
         if (checksStatusLookup[check] == "failure") {
-            return ":x:";
+            return "❌";
         }
         /* eslint-enable security/detect-object-injection */
     }
     else {
-        return ":hourglass:";
+        return "⌛";
     }
-    return ":interrobang:";
+    return "❓";
 };
 exports.statusToMark = statusToMark;
 /**
@@ -79,9 +79,8 @@ exports.statusToMark = statusToMark;
  */
 var generateProgressDetails = function (subprojects, checksStatusLookup, config) {
     var progress = "";
-    progress += "## Progress by sub-projects\n\n";
     subprojects.forEach(function (subproject) {
-        progress += "### Summary for sub-project ".concat(subproject.id, "\n\n");
+        progress += "### Summary for sub-project ".concat(subproject.id);
         progress += "| Project Name | Current Status |\n";
         progress += "| ------------ | -------------- |\n";
         subproject.checks.forEach(function (check) {
@@ -90,7 +89,7 @@ var generateProgressDetails = function (subprojects, checksStatusLookup, config)
         });
         progress += "\n";
     });
-    progress += "## Currently received checks\n\n";
+    progress += "## Currently received checks\n";
     progress += "| Project Name | Current Status |\n";
     progress += "| ------------ | -------------- |\n";
     /* eslint-disable security/detect-object-injection */
