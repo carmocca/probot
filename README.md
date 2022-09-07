@@ -24,10 +24,9 @@ See https://github.com/tianhaoz95/check-group/blob/master/README.md
 ## Setup
 
 ```sh
-# Install dependencies
 yarn install
-
-# Build the project
+yarn format
+yarn lint
 yarn build
 ```
 
