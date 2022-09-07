@@ -2,6 +2,29 @@
 /**
  * @module Core
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,6 +64,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchConfig = exports.CheckGroup = void 0;
 var utils_1 = require("../utils");
+var core = __importStar(require("@actions/core"));
 var config_getter_1 = require("./config_getter");
 Object.defineProperty(exports, "fetchConfig", { enumerable: true, get: function () { return config_getter_1.fetchConfig; } });
 var utils_2 = require("../utils");
@@ -57,42 +81,52 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, subprojs, tries, conclusion, loop;
+            var filenames, log, config, subprojs, tries, conclusion, getPostedChecks, serviceName, loop;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.files()];
                     case 1:
                         filenames = _a.sent();
-                        this.context.log.info("Files are: ".concat(JSON.stringify(filenames)));
-                        subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, this.config.subProjects);
-                        this.context.log.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
+                        log = this.context.log;
+                        config = this.config;
+                        log.info("Files are: ".concat(JSON.stringify(filenames)));
+                        subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, config.subProjects);
+                        log.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
                         tries = 0;
                         conclusion = undefined;
+                        getPostedChecks = this.getPostedChecks;
+                        serviceName = this.config.customServiceName;
                         loop = setInterval(function () {
                             return __awaiter(this, void 0, void 0, function () {
-                                var postedChecks, summary, details;
+                                var postedChecks, summary, details, error_1;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
+                                            _a.trys.push([0, 2, , 3]);
                                             if (conclusion === "success") {
+                                                log.info("Required checks were successful!");
                                                 clearInterval(loop);
                                             }
                                             tries += 1;
-                                            return [4 /*yield*/, this.getPostedChecks(this.sha)];
+                                            return [4 /*yield*/, getPostedChecks()];
                                         case 1:
                                             postedChecks = _a.sent();
-                                            this.context.log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
+                                            log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
-                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, this.config);
-                                            this.context.log.info("".concat(this.config.customServiceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
-                                            return [2 /*return*/];
+                                            details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, config);
+                                            log.info("".concat(serviceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            return [3 /*break*/, 3];
+                                        case 2:
+                                            error_1 = _a.sent();
+                                            core.setFailed(JSON.stringify(error_1));
+                                            return [3 /*break*/, 3];
+                                        case 3: return [2 /*return*/];
                                     }
                                 });
                             });
                         }, 2 * 60 * 1000 // 2 minutes in ms
                         );
-                        this.context.log.info("Required checks were successful!");
                         return [2 /*return*/];
                 }
             });
@@ -101,19 +135,15 @@ var CheckGroup = /** @class */ (function () {
     /**
      * Fetches a list of already finished
      * checks.
-     *
-     * @param sha The sha of the commit to check
      */
-    CheckGroup.prototype.getPostedChecks = function (sha) {
+    CheckGroup.prototype.getPostedChecks = function () {
         return __awaiter(this, void 0, void 0, function () {
             var checkRuns, checkNames;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        this.context.log.info("Fetch posted check runs for ".concat(sha));
-                        return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.checks.listForRef, this.context.repo({
-                                ref: sha,
-                            }), function (response) { return response.data; })];
+                    case 0: return [4 /*yield*/, this.context.octokit.paginate(this.context.octokit.checks.listForRef, this.context.repo({
+                            ref: this.sha,
+                        }), function (response) { return response.data; })];
                     case 1:
                         checkRuns = _a.sent();
                         checkNames = {};

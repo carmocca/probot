@@ -6,6 +6,7 @@ import {
   generateProgressDetails,
   generateProgressSummary,
 } from "../utils";
+import * as core from '@actions/core'
 import type { CheckGroupConfig } from "../types";
 import type { Context } from "probot";
 import { fetchConfig } from "./config_getter";
@@ -35,47 +36,52 @@ export class CheckGroup {
 
   async run(): Promise<void> {
     const filenames = await this.files();
-    this.context.log.info(`Files are: ${JSON.stringify(filenames)}`);
-    const subprojs = matchFilenamesToSubprojects(
-      filenames,
-      this.config.subProjects,
-    );
-    this.context.log.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
+    const log = this.context.log
+    const config = this.config
+
+    log.info(`Files are: ${JSON.stringify(filenames)}`);
+    const subprojs = matchFilenamesToSubprojects(filenames, config.subProjects);
+    log.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
 
     let tries = 0;
     let conclusion = undefined;
+    // cannot access `this` inside
+    const getPostedChecks = this.getPostedChecks
+    const serviceName = this.config.customServiceName
+
     // IMPORTANT: a timeout should be set in the action workflow
     const loop = setInterval(
       async function() {
-        if (conclusion === "success") {
-          clearInterval(loop)
+        try {
+          if (conclusion === "success") {
+            log.info("Required checks were successful!")
+            clearInterval(loop)
+          }
+          tries += 1;
+          const postedChecks = await getPostedChecks();
+          log.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
+          conclusion = satisfyExpectedChecks(subprojs, postedChecks);
+          const summary = generateProgressSummary(subprojs, postedChecks)
+          const details = generateProgressDetails(subprojs, postedChecks, config)
+          log.info(
+            `${serviceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
+          )
+        } catch (error) {
+          core.setFailed(JSON.stringify(error));
         }
-        tries += 1;
-        const postedChecks = await this.getPostedChecks(this.sha);
-        this.context.log.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
-        conclusion = satisfyExpectedChecks(subprojs, postedChecks);
-        const summary = generateProgressSummary(subprojs, postedChecks)
-        const details = generateProgressDetails(subprojs, postedChecks, this.config)
-        this.context.log.info(
-          `${this.config.customServiceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
-        )
       }, 2 * 60 * 1000  // 2 minutes in ms
     )
-    this.context.log.info("Required checks were successful!")
   }
 
   /**
    * Fetches a list of already finished
    * checks.
-   *
-   * @param sha The sha of the commit to check
    */
-  async getPostedChecks(sha: string): Promise<Record<string, string>> {
-    this.context.log.info(`Fetch posted check runs for ${sha}`);
+  async getPostedChecks(): Promise<Record<string, string>> {
     const checkRuns = await this.context.octokit.paginate(
       this.context.octokit.checks.listForRef,
       this.context.repo({
-        ref: sha,
+        ref: this.sha,
       }),
       (response) => response.data,
     );
