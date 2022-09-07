@@ -44,8 +44,7 @@ export class CheckGroup {
 
     let tries = 0;
     let conclusion = undefined;
-    const input = core.getInput('interval')
-    const interval = input === '' ? 2 * 60 : parseInt(input)
+    const interval = parseInt(core.getInput('interval'))
     // cannot access `this` inside
     const getPostedChecks = this.getPostedChecks
     const serviceName = this.config.customServiceName

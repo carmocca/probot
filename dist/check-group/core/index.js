@@ -81,7 +81,7 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, config, subprojs, tries, conclusion, input, interval, getPostedChecks, serviceName, loop;
+            var filenames, config, subprojs, tries, conclusion, interval, getPostedChecks, serviceName, loop;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.files()];
@@ -93,8 +93,7 @@ var CheckGroup = /** @class */ (function () {
                         core.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
                         tries = 0;
                         conclusion = undefined;
-                        input = core.getInput('interval');
-                        interval = input === '' ? 2 * 60 : parseInt(input);
+                        interval = parseInt(core.getInput('interval'));
                         getPostedChecks = this.getPostedChecks;
                         serviceName = this.config.customServiceName;
                         loop = setInterval(function () {
