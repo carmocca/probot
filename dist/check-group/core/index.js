@@ -81,19 +81,20 @@ var CheckGroup = /** @class */ (function () {
     }
     CheckGroup.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filenames, log, config, subprojs, tries, conclusion, getPostedChecks, serviceName, loop;
+            var filenames, config, subprojs, tries, conclusion, input, interval, getPostedChecks, serviceName, loop;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.files()];
                     case 1:
                         filenames = _a.sent();
-                        log = this.context.log;
                         config = this.config;
-                        log.info("Files are: ".concat(JSON.stringify(filenames)));
+                        core.info("Files are: ".concat(JSON.stringify(filenames)));
                         subprojs = (0, utils_2.matchFilenamesToSubprojects)(filenames, config.subProjects);
-                        log.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
+                        core.info("Matching subprojects are: ".concat(JSON.stringify(subprojs)));
                         tries = 0;
                         conclusion = undefined;
+                        input = core.getInput('interval');
+                        interval = input === '' ? 2 * 60 : parseInt(input);
                         getPostedChecks = this.getPostedChecks;
                         serviceName = this.config.customServiceName;
                         loop = setInterval(function () {
@@ -104,29 +105,29 @@ var CheckGroup = /** @class */ (function () {
                                         case 0:
                                             _a.trys.push([0, 2, , 3]);
                                             if (conclusion === "success") {
-                                                log.info("Required checks were successful!");
+                                                core.info("Required checks were successful!");
                                                 clearInterval(loop);
                                             }
                                             tries += 1;
                                             return [4 /*yield*/, getPostedChecks()];
                                         case 1:
                                             postedChecks = _a.sent();
-                                            log.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
+                                            core.info("Posted checks are: ".concat(JSON.stringify(postedChecks)));
                                             conclusion = (0, utils_3.satisfyExpectedChecks)(subprojs, postedChecks);
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
                                             details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks, config);
-                                            log.info("".concat(serviceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            core.info("".concat(serviceName, " conclusion: ").concat(conclusion, " after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
                                             return [3 /*break*/, 3];
                                         case 2:
                                             error_1 = _a.sent();
-                                            core.setFailed(JSON.stringify(error_1));
+                                            core.setFailed(error_1);
+                                            clearInterval(loop);
                                             return [3 /*break*/, 3];
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             });
-                        }, 2 * 60 * 1000 // 2 minutes in ms
-                        );
+                        }, interval * 1000);
                         return [2 /*return*/];
                 }
             });

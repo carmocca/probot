@@ -36,15 +36,16 @@ export class CheckGroup {
 
   async run(): Promise<void> {
     const filenames = await this.files();
-    const log = this.context.log
     const config = this.config
 
-    log.info(`Files are: ${JSON.stringify(filenames)}`);
+    core.info(`Files are: ${JSON.stringify(filenames)}`);
     const subprojs = matchFilenamesToSubprojects(filenames, config.subProjects);
-    log.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
+    core.info(`Matching subprojects are: ${JSON.stringify(subprojs)}`);
 
     let tries = 0;
     let conclusion = undefined;
+    const input = core.getInput('interval')
+    const interval = input === '' ? 2 * 60 : parseInt(input)
     // cannot access `this` inside
     const getPostedChecks = this.getPostedChecks
     const serviceName = this.config.customServiceName
@@ -54,22 +55,23 @@ export class CheckGroup {
       async function() {
         try {
           if (conclusion === "success") {
-            log.info("Required checks were successful!")
+            core.info("Required checks were successful!")
             clearInterval(loop)
           }
           tries += 1;
           const postedChecks = await getPostedChecks();
-          log.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
+          core.info(`Posted checks are: ${JSON.stringify(postedChecks)}`);
           conclusion = satisfyExpectedChecks(subprojs, postedChecks);
           const summary = generateProgressSummary(subprojs, postedChecks)
           const details = generateProgressDetails(subprojs, postedChecks, config)
-          log.info(
+          core.info(
             `${serviceName} conclusion: ${conclusion} after ${tries} tries:\n${summary}\n${details}`
           )
         } catch (error) {
-          core.setFailed(JSON.stringify(error));
+          core.setFailed(error);
+          clearInterval(loop)
         }
-      }, 2 * 60 * 1000  // 2 minutes in ms
+      }, interval * 1000
     )
   }
 
