@@ -56,7 +56,7 @@ export class CheckGroup {
     const loop = setInterval(
       async function(that) {
         try {
-          if (conclusion === "success") {
+          if (conclusion === "all_passing") {
             core.info("Required checks were successful!")
             clearInterval(loop)
           }

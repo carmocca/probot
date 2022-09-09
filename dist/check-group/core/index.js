@@ -105,7 +105,7 @@ var CheckGroup = /** @class */ (function () {
                                     switch (_a.label) {
                                         case 0:
                                             _a.trys.push([0, 2, , 3]);
-                                            if (conclusion === "success") {
+                                            if (conclusion === "all_passing") {
                                                 core.info("Required checks were successful!");
                                                 clearInterval(loop);
                                             }
