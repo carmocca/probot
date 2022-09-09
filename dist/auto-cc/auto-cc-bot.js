@@ -56,7 +56,6 @@ function myBot(app) {
                     case 1:
                         subscriptions = _a.sent();
                         context.log('payload_type=', payloadType);
-                        context.log.debug('payload', context.payload);
                         labels = context.payload[payloadType]['labels'].map(function (e) { return e['name']; });
                         context.log({ labels: labels });
                         cc = new Set();
@@ -102,7 +101,7 @@ function myBot(app) {
                         _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        if (!payloadType.startsWith('pull_request')) return [3 /*break*/, 5];
+                        if (!(payloadType === 'pull_request')) return [3 /*break*/, 5];
                         return [4 /*yield*/, context.octokit.pulls.update(context.pullRequest({ body: newBody }))];
                     case 4:
                         _a.sent();
@@ -145,28 +144,6 @@ function myBot(app) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request')];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    // @ts-ignore: https://github.com/probot/probot/issues/1635
-    app.on('pull_request_target.labeled', function (context) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request_target')];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    // @ts-ignore: https://github.com/probot/probot/issues/1635
-    app.on('pull_request_target.ready_for_review', function (context) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request_target')];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
