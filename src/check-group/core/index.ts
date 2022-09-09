@@ -57,6 +57,8 @@ export class CheckGroup {
       async function(that) {
         try {
           tries += 1;
+          core.startGroup(`Check ${tries}`);
+
           const postedChecks = await getPostedChecks(that.context, that.sha);
           core.debug(`postedChecks: ${JSON.stringify(postedChecks)}`);
 
@@ -64,8 +66,10 @@ export class CheckGroup {
           const summary = generateProgressSummary(subprojs, postedChecks)
           const details = generateProgressDetails(subprojs, postedChecks)
           core.info(
-            `${that.config.customServiceName} conclusion: '${conclusion}' after ${tries} tries:\n${summary}\n${details}`
+            `${that.config.customServiceName} conclusion: '${conclusion}':\n${summary}\n${details}`
           )
+          core.endGroup();
+          
           if (conclusion === "all_passing") {
             core.info("Required checks were successful!")
             clearInterval(loop)
