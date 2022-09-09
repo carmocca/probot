@@ -18,6 +18,7 @@ function myBot(app: Probot): void {
   ): Promise<void> {
     const subscriptions = await loadSubscriptions(context);
     context.log('payload_type=', payloadType);
+    context.log.debug('payload', context.payload);
     const labels = context.payload[payloadType]['labels'].map(e => e['name']);
     context.log({labels});
     const cc = new Set();
@@ -60,7 +61,7 @@ function myBot(app: Probot): void {
         context.log({newBody});
         if (payloadType === 'issue') {
           await context.octokit.issues.update(context.issue({body: newBody}));
-        } else if (payloadType === 'pull_request') {
+        } else if (payloadType.startsWith('pull_request')) {
           await context.octokit.pulls.update(
             context.pullRequest({body: newBody})
           );
@@ -82,6 +83,14 @@ function myBot(app: Probot): void {
   // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
   app.on('pull_request.ready_for_review', async context => {
     await runBotForLabels(context, 'pull_request');
+  });
+  // @ts-ignore: https://github.com/probot/probot/issues/1635
+  app.on('pull_request_target.labeled', async context => {
+    await runBotForLabels(context, 'pull_request_target');
+  });
+  // @ts-ignore: https://github.com/probot/probot/issues/1635
+  app.on('pull_request_target.ready_for_review', async context => {
+    await runBotForLabels(context, 'pull_request_target');
   });
 }
 

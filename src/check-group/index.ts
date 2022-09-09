@@ -4,7 +4,7 @@ import {CheckGroup, fetchConfig} from './core';
 
 const eventHandler = async (context: Context): Promise<void> => {
   const name = context.name;
-  if (name !== 'pull_request') {
+  if (!name.startsWith('pull_request')) {
     throw new Error(`name ${name} not implemented`);
   }
   const payload = context.payload as PullRequestEvent;
@@ -21,6 +21,8 @@ const eventHandler = async (context: Context): Promise<void> => {
 
 function checkGroupApp(app: Probot): void {
   app.on('pull_request', async context => await eventHandler(context));
+  // @ts-ignore
+  app.on('pull_request_target', async context => await eventHandler(context));
 }
 
 export default checkGroupApp;

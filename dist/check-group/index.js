@@ -43,7 +43,7 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
         switch (_a.label) {
             case 0:
                 name = context.name;
-                if (name !== 'pull_request') {
+                if (!name.startsWith('pull_request')) {
                     throw new Error("name ".concat(name, " not implemented"));
                 }
                 payload = context.payload;
@@ -65,6 +65,13 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
 function checkGroupApp(app) {
     var _this = this;
     app.on('pull_request', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, eventHandler(context)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    }); }); });
+    // @ts-ignore
+    app.on('pull_request_target', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, eventHandler(context)];
             case 1: return [2 /*return*/, _a.sent()];
