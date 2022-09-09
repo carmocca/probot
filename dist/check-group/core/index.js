@@ -105,10 +105,6 @@ var CheckGroup = /** @class */ (function () {
                                     switch (_a.label) {
                                         case 0:
                                             _a.trys.push([0, 2, , 3]);
-                                            if (conclusion === "all_passing") {
-                                                core.info("Required checks were successful!");
-                                                clearInterval(loop);
-                                            }
                                             tries += 1;
                                             return [4 /*yield*/, getPostedChecks(that.context, that.sha)];
                                         case 1:
@@ -118,6 +114,10 @@ var CheckGroup = /** @class */ (function () {
                                             summary = (0, utils_1.generateProgressSummary)(subprojs, postedChecks);
                                             details = (0, utils_1.generateProgressDetails)(subprojs, postedChecks);
                                             core.info("".concat(that.config.customServiceName, " conclusion: '").concat(conclusion, "' after ").concat(tries, " tries:\n").concat(summary, "\n").concat(details));
+                                            if (conclusion === "all_passing") {
+                                                core.info("Required checks were successful!");
+                                                clearInterval(loop);
+                                            }
                                             return [3 /*break*/, 3];
                                         case 2:
                                             error_1 = _a.sent();

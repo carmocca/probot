@@ -56,12 +56,7 @@ export class CheckGroup {
     const loop = setInterval(
       async function(that) {
         try {
-          if (conclusion === "all_passing") {
-            core.info("Required checks were successful!")
-            clearInterval(loop)
-          }
           tries += 1;
-
           const postedChecks = await getPostedChecks(that.context, that.sha);
           core.debug(`postedChecks: ${JSON.stringify(postedChecks)}`);
 
@@ -71,6 +66,10 @@ export class CheckGroup {
           core.info(
             `${that.config.customServiceName} conclusion: '${conclusion}' after ${tries} tries:\n${summary}\n${details}`
           )
+          if (conclusion === "all_passing") {
+            core.info("Required checks were successful!")
+            clearInterval(loop)
+          }
         } catch (error) {
           core.setFailed(error);
           clearInterval(loop)
