@@ -1,6 +1,9 @@
 name: 'carmocca Lightning Probot'
 description: 'Probot for PyTorch Lightning.'
 inputs:
+  job:
+    required: true
+    default: auto-cc
   interval:
     required: false
     default: 120

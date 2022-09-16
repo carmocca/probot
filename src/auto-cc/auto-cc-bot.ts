@@ -12,13 +12,15 @@ function myBot(app: Probot): void {
     return tracker.loadIssue(context);
   }
 
-  async function runBotForLabels(
-    context: Context,
-    payloadType: string
-  ): Promise<void> {
+  async function runBotForLabels(context: Context): Promise<void> {
     const subscriptions = await loadSubscriptions(context);
-    context.log('payload_type=', payloadType);
-    const labels = context.payload[payloadType]['labels'].map(e => e['name']);
+    const name = context.name;
+    if (!['pull_request', 'issues'].includes(name)) {
+      throw new Error(
+        `name ${name} should be one of ['pull_request', 'issues']`
+      );
+    }
+    const labels = context.payload[name]['labels'].map(e => e['name']);
     context.log({labels});
     const cc = new Set();
     // eslint-disable-next-line github/array-foreach
@@ -30,7 +32,7 @@ function myBot(app: Probot): void {
     });
     context.log({cc: Array.from(cc)}, 'from subscriptions');
     if (cc.size) {
-      const body = context.payload[payloadType]['body'];
+      const body = context.payload[name]['body'];
       const reCC = /cc( +@[a-zA-Z0-9-/]+)+/;
       const oldCCMatch = body ? body.match(reCC) : null;
       const prevCC = new Set();
@@ -58,9 +60,9 @@ function myBot(app: Probot): void {
             : `${body}\n\n${newCCString}`
           : newCCString;
         context.log({newBody});
-        if (payloadType === 'issue') {
+        if (name === 'issues') {
           await context.octokit.issues.update(context.issue({body: newBody}));
-        } else if (payloadType === 'pull_request') {
+        } else if (name === 'pull_request') {
           await context.octokit.pulls.update(
             context.pullRequest({body: newBody})
           );
@@ -73,16 +75,15 @@ function myBot(app: Probot): void {
     }
   }
 
-  app.on('issues.labeled', async context => {
-    await runBotForLabels(context, 'issue');
-  });
-  app.on('pull_request.labeled', async context => {
-    await runBotForLabels(context, 'pull_request');
-  });
-  // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
-  app.on('pull_request.ready_for_review', async context => {
-    await runBotForLabels(context, 'pull_request');
-  });
+  app.on(
+    [
+      'issues.labeled',
+      'pull_request.labeled',
+      // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+      'pull_request.ready_for_review'
+    ],
+    async context => await runBotForLabels(context)
+  );
 }
 
 export default myBot;

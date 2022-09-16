@@ -44,7 +44,7 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
             case 0:
                 name = context.name;
                 if (name !== 'pull_request') {
-                    throw new Error("name ".concat(name, " not implemented"));
+                    throw new Error("name ".concat(name, " should be on of ['pull_request']"));
                 }
                 payload = context.payload;
                 pullRequestNumber = payload.pull_request.number;
@@ -64,7 +64,13 @@ var eventHandler = function (context) { return __awaiter(void 0, void 0, void 0,
 }); };
 function checkGroupApp(app) {
     var _this = this;
-    app.on('pull_request', function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+    app.on([
+        'pull_request.opened',
+        'pull_request.reopened',
+        'pull_request.synchronize',
+        // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+        'pull_request.ready_for_review'
+    ], function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, eventHandler(context)];
             case 1: return [2 /*return*/, _a.sent()];

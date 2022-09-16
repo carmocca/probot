@@ -5,7 +5,7 @@ import {CheckGroup, fetchConfig} from './core';
 const eventHandler = async (context: Context): Promise<void> => {
   const name = context.name;
   if (name !== 'pull_request') {
-    throw new Error(`name ${name} not implemented`);
+    throw new Error(`name ${name} should be on of ['pull_request']`);
   }
   const payload = context.payload as PullRequestEvent;
   const pullRequestNumber = payload.pull_request.number;
@@ -20,7 +20,16 @@ const eventHandler = async (context: Context): Promise<void> => {
 };
 
 function checkGroupApp(app: Probot): void {
-  app.on('pull_request', async context => await eventHandler(context));
+  app.on(
+    [
+      'pull_request.opened',
+      'pull_request.reopened',
+      'pull_request.synchronize',
+      // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+      'pull_request.ready_for_review'
+    ],
+    async context => await eventHandler(context)
+  );
 }
 
 export default checkGroupApp;

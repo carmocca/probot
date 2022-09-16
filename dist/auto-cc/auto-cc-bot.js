@@ -47,16 +47,19 @@ function myBot(app) {
             });
         });
     }
-    function runBotForLabels(context, payloadType) {
+    function runBotForLabels(context) {
         return __awaiter(this, void 0, void 0, function () {
-            var subscriptions, labels, cc, body, reCC, oldCCMatch, prevCC, oldCCString, m, reUsername, newCCString_1, newBody;
+            var subscriptions, name, labels, cc, body, reCC, oldCCMatch, prevCC, oldCCString, m, reUsername, newCCString_1, newBody;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, loadSubscriptions(context)];
                     case 1:
                         subscriptions = _a.sent();
-                        context.log('payload_type=', payloadType);
-                        labels = context.payload[payloadType]['labels'].map(function (e) { return e['name']; });
+                        name = context.name;
+                        if (!['pull_request', 'issues'].includes(name)) {
+                            throw new Error("name ".concat(name, " should be one of ['pull_request', 'issues']"));
+                        }
+                        labels = context.payload[name]['labels'].map(function (e) { return e['name']; });
                         context.log({ labels: labels });
                         cc = new Set();
                         // eslint-disable-next-line github/array-foreach
@@ -68,7 +71,7 @@ function myBot(app) {
                         });
                         context.log({ cc: Array.from(cc) }, 'from subscriptions');
                         if (!cc.size) return [3 /*break*/, 8];
-                        body = context.payload[payloadType]['body'];
+                        body = context.payload[name]['body'];
                         reCC = /cc( +@[a-zA-Z0-9-/]+)+/;
                         oldCCMatch = body ? body.match(reCC) : null;
                         prevCC = new Set();
@@ -95,13 +98,13 @@ function myBot(app) {
                                 : "".concat(body, "\n\n").concat(newCCString_1)
                             : newCCString_1;
                         context.log({ newBody: newBody });
-                        if (!(payloadType === 'issue')) return [3 /*break*/, 3];
+                        if (!(name === 'issues')) return [3 /*break*/, 3];
                         return [4 /*yield*/, context.octokit.issues.update(context.issue({ body: newBody }))];
                     case 2:
                         _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        if (!(payloadType === 'pull_request')) return [3 /*break*/, 5];
+                        if (!(name === 'pull_request')) return [3 /*break*/, 5];
                         return [4 /*yield*/, context.octokit.pulls.update(context.pullRequest({ body: newBody }))];
                     case 4:
                         _a.sent();
@@ -119,36 +122,16 @@ function myBot(app) {
             });
         });
     }
-    app.on('issues.labeled', function (context) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, runBotForLabels(context, 'issue')];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    app.on('pull_request.labeled', function (context) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request')];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
-    app.on('pull_request.ready_for_review', function (context) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, runBotForLabels(context, 'pull_request')];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+    app.on([
+        'issues.labeled',
+        'pull_request.labeled',
+        // If the bot is disabled for draft PRs, we want to run it when the PR is marked as ready
+        'pull_request.ready_for_review'
+    ], function (context) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, runBotForLabels(context)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    }); }); });
 }
 exports.default = myBot;
