@@ -49,16 +49,17 @@ function myBot(app) {
     }
     function runBotForLabels(context) {
         return __awaiter(this, void 0, void 0, function () {
-            var subscriptions, name, labels, cc, body, reCC, oldCCMatch, prevCC, oldCCString, m, reUsername, newCCString_1, newBody;
+            var subscriptions, contextName, name, labels, cc, body, reCC, oldCCMatch, prevCC, oldCCString, m, reUsername, newCCString_1, newBody;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, loadSubscriptions(context)];
                     case 1:
                         subscriptions = _a.sent();
-                        name = context.name;
-                        if (!['pull_request', 'issues'].includes(name)) {
-                            throw new Error("name ".concat(name, " should be one of ['pull_request', 'issues']"));
+                        contextName = context.name;
+                        if (!['pull_request', 'issues'].includes(contextName)) {
+                            throw new Error("name ".concat(contextName, " should be one of ['pull_request', 'issues']"));
                         }
+                        name = contextName === 'issues' ? 'issue' : contextName;
                         labels = context.payload[name]['labels'].map(function (e) { return e['name']; });
                         context.log({ labels: labels });
                         cc = new Set();
@@ -98,7 +99,7 @@ function myBot(app) {
                                 : "".concat(body, "\n\n").concat(newCCString_1)
                             : newCCString_1;
                         context.log({ newBody: newBody });
-                        if (!(name === 'issues')) return [3 /*break*/, 3];
+                        if (!(name === 'issue')) return [3 /*break*/, 3];
                         return [4 /*yield*/, context.octokit.issues.update(context.issue({ body: newBody }))];
                     case 2:
                         _a.sent();

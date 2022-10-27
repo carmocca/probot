@@ -14,12 +14,14 @@ function myBot(app: Probot): void {
 
   async function runBotForLabels(context: Context): Promise<void> {
     const subscriptions = await loadSubscriptions(context);
-    const name = context.name;
-    if (!['pull_request', 'issues'].includes(name)) {
+    const contextName = context.name;
+    if (!['pull_request', 'issues'].includes(contextName)) {
       throw new Error(
-        `name ${name} should be one of ['pull_request', 'issues']`
+        `name ${contextName} should be one of ['pull_request', 'issues']`
       );
     }
+    // the context and payload names do not match
+    const name = contextName === 'issues' ? 'issue' : contextName;
     const labels = context.payload[name]['labels'].map(e => e['name']);
     context.log({labels});
     const cc = new Set();
@@ -60,7 +62,7 @@ function myBot(app: Probot): void {
             : `${body}\n\n${newCCString}`
           : newCCString;
         context.log({newBody});
-        if (name === 'issues') {
+        if (name === 'issue') {
           await context.octokit.issues.update(context.issue({body: newBody}));
         } else if (name === 'pull_request') {
           await context.octokit.pulls.update(
