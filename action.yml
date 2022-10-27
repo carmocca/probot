@@ -8,5 +8,5 @@ inputs:
     required: false
     default: 120
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/action.js'
